@@ -1,20 +1,12 @@
-import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
+import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import { Home } from './pages';
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
-      <h1>Hello</h1>
-    </ChakraProvider>
+    <Routes>
+      <Route path={'/'} element={<Home />} />
+    </Routes>
   );
 }
 
