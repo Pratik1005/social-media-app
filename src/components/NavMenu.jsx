@@ -56,6 +56,8 @@ const NavMenu = () => {
           borderRadius="full"
           backgroundColor="#6D28D9"
           color="#fff"
+          variant="solid"
+          _hover={{ backgroundColor: '#6d28d9' }}
         >
           Add Post
         </Button>

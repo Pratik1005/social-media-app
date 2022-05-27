@@ -1,9 +1,10 @@
 import { Container, Grid, GridItem } from '@chakra-ui/react';
-import { NavMenu } from '../../components';
+import { NavMenu, TopBar } from '../../components';
 
 const Home = () => {
   return (
     <Container maxWidth="container.xl" padding={0}>
+      <TopBar />
       <Grid templateColumns="1fr 3fr 2fr" gap={8}>
         <GridItem>
           <NavMenu />
