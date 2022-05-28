@@ -1,5 +1,11 @@
-import { Container, Grid, GridItem, VStack, Input } from '@chakra-ui/react';
-import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
+import { Container, Grid, GridItem, VStack, Heading } from '@chakra-ui/react';
+import {
+  NavMenu,
+  TopBar,
+  WhoToFollow,
+  PostCard,
+  SearchBar,
+} from '../../components';
 
 const Explore = () => {
   return (
@@ -11,17 +17,14 @@ const Explore = () => {
         </GridItem>
         <GridItem>
           <VStack>
+            <Heading fontSize="25px">Explore</Heading>
             {[1, 2, 3, 4, 5].map(post => (
               <PostCard key={post} />
             ))}
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">
-          <Input
-            placeholder="Search insight"
-            borderRadius="full"
-            marginBottom={2}
-          />
+          <SearchBar />
           <WhoToFollow />
         </GridItem>
       </Grid>

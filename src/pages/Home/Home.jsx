@@ -5,9 +5,14 @@ import {
   VStack,
   HStack,
   Button,
-  Input,
 } from '@chakra-ui/react';
-import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
+import {
+  NavMenu,
+  TopBar,
+  WhoToFollow,
+  PostCard,
+  SearchBar,
+} from '../../components';
 
 const Home = () => {
   const TrendIcon = () => (
@@ -51,11 +56,7 @@ const Home = () => {
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">
-          <Input
-            placeholder="Search insight"
-            borderRadius="full"
-            marginBottom={2}
-          />
+          <SearchBar />
           <WhoToFollow />
         </GridItem>
       </Grid>
