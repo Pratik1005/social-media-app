@@ -1,5 +1,5 @@
 import { Container, Grid, GridItem } from '@chakra-ui/react';
-import { NavMenu, TopBar, WhoToFollow } from '../../components';
+import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
 const Home = () => {
   return (
@@ -10,7 +10,7 @@ const Home = () => {
           <NavMenu />
         </GridItem>
         <GridItem>
-          <h1>Post Feed</h1>
+          <PostCard />
         </GridItem>
         <GridItem>
           <WhoToFollow />

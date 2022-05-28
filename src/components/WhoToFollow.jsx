@@ -1,4 +1,12 @@
-import { VStack, HStack, Image, Text, Button, Heading } from '@chakra-ui/react';
+import {
+  VStack,
+  HStack,
+  Image,
+  Text,
+  Button,
+  Heading,
+  Flex,
+} from '@chakra-ui/react';
 import profile_pic from '../asset/profile_pic.jpg';
 const WhoToFollow = () => {
   const FollowUser = () => (
@@ -10,10 +18,12 @@ const WhoToFollow = () => {
           src={profile_pic}
           alt="user"
         />
-        <VStack justify="center" align="center">
+        <Flex justify="center" align="flex-start" flexDirection="column">
           <Text fontWeight="500">Jhon Doe</Text>
-          <Text color="gray.600">@jhondoe</Text>
-        </VStack>
+          <Text color="gray.600" marginTop={0}>
+            @jhondoe
+          </Text>
+        </Flex>
       </HStack>
       <Button
         borderRadius="full"
