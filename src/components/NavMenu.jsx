@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const NavMenu = () => {
   return (
-    <VStack w="full" spacing={2} align="flex-start">
+    <VStack w="full" spacing={2} align="flex-start" position="sticky" top="74">
       <HStack
         as={NavLink}
         to="/"
@@ -21,7 +21,7 @@ const NavMenu = () => {
       </HStack>
       <HStack
         as={NavLink}
-        to="/"
+        to="/explore"
         fontSize={20}
         fontWeight={500}
         py={2}

@@ -1,7 +1,19 @@
-import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
+import {
+  Container,
+  Grid,
+  GridItem,
+  VStack,
+  HStack,
+  Button,
+  Input,
+} from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
 const Home = () => {
+  const TrendIcon = () => (
+    <span className="material-icons">local_fire_department</span>
+  );
+  const SortIcon = () => <span className="material-icons">swap_vert</span>;
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />
@@ -11,12 +23,39 @@ const Home = () => {
         </GridItem>
         <GridItem>
           <VStack>
+            <HStack width="full">
+              <Button
+                leftIcon={<TrendIcon />}
+                width="full"
+                borderRadius="full"
+                variant="outline"
+                color="gray.700"
+                border="2px"
+              >
+                Trending
+              </Button>
+              <Button
+                leftIcon={<SortIcon />}
+                width="full"
+                borderRadius="full"
+                variant="outline"
+                color="gray.700"
+                border="2px"
+              >
+                Sort by
+              </Button>
+            </HStack>
             {[1, 2, 3, 4, 5].map(post => (
               <PostCard key={post} />
             ))}
           </VStack>
         </GridItem>
-        <GridItem>
+        <GridItem position="sticky" top="74">
+          <Input
+            placeholder="Search insight"
+            borderRadius="full"
+            marginBottom={2}
+          />
           <WhoToFollow />
         </GridItem>
       </Grid>

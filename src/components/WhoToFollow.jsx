@@ -45,6 +45,8 @@ const WhoToFollow = () => {
       padding={4}
       spacing={5}
       boxShadow="xl"
+      position="sticky"
+      top="74"
     >
       <Heading as="h3" fontSize="20px">
         Who to follow

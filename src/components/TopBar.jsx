@@ -3,7 +3,13 @@ import profile_pic from '../asset/profile_pic.jpg';
 
 const TopBar = () => {
   return (
-    <HStack justify="space-between" paddingY={2}>
+    <HStack
+      justify="space-between"
+      paddingY={2}
+      position="sticky"
+      top="0"
+      backgroundColor="rgba(247,247,247,0.9)"
+    >
       <Heading
         as="h1"
         fontSize="5xl"
