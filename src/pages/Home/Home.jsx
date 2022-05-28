@@ -1,4 +1,4 @@
-import { Container, Grid, GridItem } from '@chakra-ui/react';
+import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
 const Home = () => {
@@ -10,7 +10,11 @@ const Home = () => {
           <NavMenu />
         </GridItem>
         <GridItem>
-          <PostCard />
+          <VStack>
+            {[1, 2, 3, 4, 5].map(post => (
+              <PostCard key={post} />
+            ))}
+          </VStack>
         </GridItem>
         <GridItem>
           <WhoToFollow />

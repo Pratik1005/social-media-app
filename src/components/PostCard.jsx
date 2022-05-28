@@ -9,6 +9,7 @@ const PostCard = () => {
       borderRadius="2xl"
       padding={4}
       align="flex-start"
+      width="full"
     >
       <HStack>
         <Image

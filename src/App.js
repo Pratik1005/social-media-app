@@ -6,7 +6,7 @@ import { Home } from './pages';
 function App() {
   const bgColor = useColorModeValue('#f7f7f7', '#171923');
   return (
-    <Box height="100vh" backgroundColor={bgColor}>
+    <Box backgroundColor={bgColor}>
       <Routes>
         <Route path={'/'} element={<Home />} />
       </Routes>

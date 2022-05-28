@@ -1,4 +1,5 @@
-import { HStack, Box, Heading } from '@chakra-ui/react';
+import { HStack, Box, Heading, Image, Tooltip } from '@chakra-ui/react';
+import profile_pic from '../asset/profile_pic.jpg';
 
 const TopBar = () => {
   return (
@@ -12,11 +13,24 @@ const TopBar = () => {
         Insight
       </Heading>
       <HStack>
-        <Box as="span" className="material-icons" paddingRight={8}>
-          dark_mode
-        </Box>
-        <Box as="span" className="material-icons" paddingRight={8}>
-          account_circle
+        <Tooltip label="Change theme" fontSize="sm">
+          <Box
+            as="span"
+            className="material-icons"
+            paddingRight={8}
+            cursor="pointer"
+          >
+            dark_mode
+          </Box>
+        </Tooltip>
+
+        <Box paddingRight={8} cursor="pointer">
+          <Image
+            borderRadius="full"
+            boxSize="48px"
+            src={profile_pic}
+            alt="user"
+          />
         </Box>
       </HStack>
     </HStack>
