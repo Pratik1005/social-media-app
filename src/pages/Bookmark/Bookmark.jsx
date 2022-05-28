@@ -1,7 +1,7 @@
 import { Container, Grid, GridItem, VStack, Input } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
-const Explore = () => {
+const Bookmark = () => {
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />
@@ -11,8 +11,8 @@ const Explore = () => {
         </GridItem>
         <GridItem>
           <VStack>
-            {[1, 2, 3, 4, 5].map(post => (
-              <PostCard key={post} />
+            {[1, 2].map(post => (
+              <PostCard key={post} isBookmark={true} />
             ))}
           </VStack>
         </GridItem>
@@ -29,4 +29,4 @@ const Explore = () => {
   );
 };
 
-export { Explore };
+export { Bookmark };

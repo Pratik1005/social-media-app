@@ -1,7 +1,7 @@
 import { VStack, HStack, Image, Text, Box, Flex } from '@chakra-ui/react';
 import profile_pic from '../asset/profile_pic.jpg';
 
-const PostCard = () => {
+const PostCard = ({ isBookmark }) => {
   return (
     <VStack
       spacing={4}
@@ -71,7 +71,7 @@ const PostCard = () => {
           fontSize="18px"
           cursor="pointer"
         >
-          bookmark_border
+          {isBookmark ? 'bookmark' : 'bookmark_border'}
         </Box>
       </HStack>
     </VStack>

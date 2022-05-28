@@ -36,7 +36,7 @@ const NavMenu = () => {
       </HStack>
       <HStack
         as={NavLink}
-        to="/"
+        to="/bookmarks"
         fontSize={20}
         fontWeight={500}
         py={2}
