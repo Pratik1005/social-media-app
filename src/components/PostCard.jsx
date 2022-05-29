@@ -19,10 +19,20 @@ const PostCard = ({ isBookmark }) => {
           alt="user"
         />
         <Flex justify="center" align="flex-start" flexDirection="column">
-          <Text fontWeight="500">Jhon Doe</Text>
-          <Text color="gray.600" marginTop={0}>
-            @jhondoe
+          <Text as="span" fontWeight="500">
+            Jhon Doe
           </Text>
+          <HStack>
+            <Text as="span" color="gray.600" marginTop={0}>
+              @jhondoe
+            </Text>
+            <Text as="span" fontWeight="500">
+              ·
+            </Text>
+            <Text as="span" fontSize="14px">
+              May 29, 2022
+            </Text>
+          </HStack>
         </Flex>
       </HStack>
       <Text>
