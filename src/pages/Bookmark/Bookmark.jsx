@@ -1,11 +1,5 @@
 import { Container, Grid, GridItem, VStack, Heading } from '@chakra-ui/react';
-import {
-  NavMenu,
-  TopBar,
-  WhoToFollow,
-  PostCard,
-  SearchBar,
-} from '../../components';
+import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
 const Bookmark = () => {
   return (
@@ -17,14 +11,15 @@ const Bookmark = () => {
         </GridItem>
         <GridItem>
           <VStack>
-            <Heading fontSize="25px">Bookmarks</Heading>
+            <Heading fontSize="25px" paddingBottom={2}>
+              Bookmarks
+            </Heading>
             {[1, 2].map(post => (
               <PostCard key={post} isBookmark={true} />
             ))}
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">
-          <SearchBar />
           <WhoToFollow />
         </GridItem>
       </Grid>

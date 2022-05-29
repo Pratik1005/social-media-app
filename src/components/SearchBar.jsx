@@ -2,12 +2,7 @@ import { Input } from '@chakra-ui/react';
 
 const SearchBar = () => {
   return (
-    <Input
-      placeholder="Search insight"
-      borderRadius="full"
-      marginBottom={2}
-      border="2px"
-    />
+    <Input placeholder="Search Insight" borderRadius="full" border="2px" />
   );
 };
 

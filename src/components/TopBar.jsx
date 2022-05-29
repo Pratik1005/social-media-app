@@ -23,7 +23,7 @@ const TopBar = () => {
           <Box
             as="span"
             className="material-icons"
-            paddingRight={8}
+            marginRight={8}
             cursor="pointer"
           >
             dark_mode

@@ -8,6 +8,8 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import profile_pic from '../asset/profile_pic.jpg';
+import { SearchBar } from './index';
+
 const WhoToFollow = () => {
   const FollowUser = () => (
     <HStack justify="space-between" width="full">
@@ -37,23 +39,24 @@ const WhoToFollow = () => {
     </HStack>
   );
   return (
-    <VStack
-      backgroundColor="#fff"
-      borderRadius="2xl"
-      align="flex-start"
-      width="full"
-      padding={4}
-      spacing={5}
-      boxShadow="xl"
-      position="sticky"
-      top="74"
-    >
-      <Heading as="h3" fontSize="20px">
-        Who to follow
-      </Heading>
-      {[1, 2, 3, 4].map(item => (
-        <FollowUser key={item} />
-      ))}
+    <VStack position="sticky" top="74">
+      <SearchBar />
+      <VStack
+        backgroundColor="#fff"
+        borderRadius="2xl"
+        align="flex-start"
+        width="full"
+        padding={4}
+        spacing={5}
+        boxShadow="xl"
+      >
+        <Heading as="h3" fontSize="20px">
+          Who to follow
+        </Heading>
+        {[1, 2, 3, 4].map(item => (
+          <FollowUser key={item} />
+        ))}
+      </VStack>
     </VStack>
   );
 };
