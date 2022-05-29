@@ -52,7 +52,9 @@ const PostCard = ({ isBookmark }) => {
           >
             mode_comment
           </Box>
-          <Box as="span">0</Box>
+          <Box as="span" fontSize="14px">
+            0
+          </Box>
         </HStack>
         <Box
           as="span"
@@ -72,7 +74,9 @@ const PostCard = ({ isBookmark }) => {
           >
             favorite_border
           </Box>
-          <Box as="span">0</Box>
+          <Box as="span" fontSize="14px">
+            0
+          </Box>
         </HStack>
         <Box
           as="span"
