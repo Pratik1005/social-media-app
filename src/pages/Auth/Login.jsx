@@ -3,9 +3,16 @@ import { Footer, LoginForm } from '../../components';
 
 const Login = () => {
   return (
-    <Container maxWidth="container.lg" padding={0}>
-      <Flex>
-        <VStack width="full">
+    <Container
+      maxWidth="container.lg"
+      padding={0}
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      height="100vh"
+    >
+      <Flex padding={16}>
+        <VStack width="full" alignItems="flex-start" justifyContent="center">
           <Heading fontSize="4xl">
             Share your
             <Box

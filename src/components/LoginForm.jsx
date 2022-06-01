@@ -36,7 +36,6 @@ const LoginForm = () => {
       </FormControl>
       <FormControl>
         <FormLabel>Password</FormLabel>
-        {/* <Input type="password" placeholder="Enter password" /> */}
         <InputGroup>
           <Input
             paddingRight="2rem"

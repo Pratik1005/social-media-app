@@ -2,7 +2,7 @@ import { VStack, Text, Box, Link, HStack } from '@chakra-ui/react';
 
 const Footer = () => {
   return (
-    <VStack as="footer">
+    <VStack as="footer" paddingY={8}>
       <Text>Made by Pratik Devle</Text>
       <HStack spacing={4} color="#6d28d9" fontSize="24px">
         <Link href="https://github.com/Pratik1005" isExternal>
