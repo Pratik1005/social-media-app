@@ -1,7 +1,7 @@
 import './App.css';
 import { Box, useColorModeValue } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
-import { Home, Explore, Bookmark } from './pages';
+import { Home, Explore, Bookmark, Login } from './pages';
 
 function App() {
   const bgColor = useColorModeValue('#f7f7f7', '#171923');
@@ -11,6 +11,7 @@ function App() {
         <Route path={'/'} element={<Home />} />
         <Route path={'/explore'} element={<Explore />} />
         <Route path={'/bookmarks'} element={<Bookmark />} />
+        <Route path={'/login'} element={<Login />} />
       </Routes>
     </Box>
   );
