@@ -1,19 +1,11 @@
-import {
-  Container,
-  Flex,
-  Heading,
-  Box,
-  VStack,
-  Text,
-  Link,
-} from '@chakra-ui/react';
-import { Footer } from '../../components';
+import { Container, Flex, Heading, Box, VStack } from '@chakra-ui/react';
+import { Footer, LoginForm } from '../../components';
 
 const Login = () => {
   return (
-    <Container maxWidth="container.xl" padding={0}>
+    <Container maxWidth="container.lg" padding={0}>
       <Flex>
-        <VStack>
+        <VStack width="full">
           <Heading fontSize="4xl">
             Share your
             <Box
@@ -28,8 +20,9 @@ const Login = () => {
           </Heading>
           <Heading fontSize="4xl">Grow with the community!</Heading>
         </VStack>
-
-        <VStack>Form</VStack>
+        <VStack width="full">
+          <LoginForm />
+        </VStack>
       </Flex>
       <Footer />
     </Container>
