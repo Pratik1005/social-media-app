@@ -7,6 +7,7 @@ import {
   Text,
   Link,
 } from '@chakra-ui/react';
+import { Footer } from '../../components';
 
 const Login = () => {
   return (
@@ -30,24 +31,7 @@ const Login = () => {
 
         <VStack>Form</VStack>
       </Flex>
-      <VStack as="footer">
-        <Text>Made by Pratik Devle</Text>
-        <Box display="flex">
-          <Link href="https://github.com/Pratik1005" isExternal>
-            <Box as="i" className="fab fa-github"></Box>
-          </Link>
-          <Link
-            href="https://www.linkedin.com/in/pratik-devle-296184160"
-            isExternal
-          >
-            <Box as="i" className="fab fa-linkedin-in"></Box>
-          </Link>
-          <Link href="https://twitter.com/DevlePratik" isExternal>
-            <Box as="i" className="fab fa-twitter"></Box>
-          </Link>
-        </Box>
-        <Text fontSize="14px">© {new Date().getFullYear()} Insight</Text>
-      </VStack>
+      <Footer />
     </Container>
   );
 };
