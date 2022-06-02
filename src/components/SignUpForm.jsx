@@ -16,6 +16,12 @@ import { useState } from 'react';
 
 const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [signUpData, setSignUpData] = useState({
+    email: '',
+    fullName: '',
+    userName: '',
+    password: '',
+  });
 
   const handleShowPassword = () => {
     setShowPassword(prev => !prev);
