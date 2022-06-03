@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,7 +8,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { app, auth, db } from '../../firebase';
 
 const initialState = {
-  userData: {},
+  userData: null,
   status: 'idle',
 };
 
@@ -23,6 +24,7 @@ export const userSignUp = createAsyncThunk(
       console.log(response.user);
     } catch (err) {
       console.error('signup', err);
+      toast.error(err.message);
     }
   }
 );
