@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { collection, addDoc, setDoc, doc, getDoc } from 'firebase/firestore';
 import { app, auth, db } from '../../firebase';
@@ -60,6 +61,16 @@ export const userLogin = createAsyncThunk(
     }
   }
 );
+
+export const userLogout = createAsyncThunk('auth/userLogout', async () => {
+  try {
+    await signOut(auth);
+    toast.success('logged out');
+  } catch (err) {
+    console.error('logout', err);
+    toast.error(err.message);
+  }
+});
 
 export const authSlice = createSlice({
   name: 'auth',
