@@ -11,12 +11,13 @@ import {
   InputRightElement,
   Box,
 } from '@chakra-ui/react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSignUp } from '../features/auth/authSlice';
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [signUpData, setSignUpData] = useState({
     email: '',
@@ -39,6 +40,9 @@ const SignUpForm = () => {
   const handleSignUp = e => {
     e.preventDefault();
     dispatch(userSignUp(signUpData));
+    if (status === 'fulfilled') {
+      navigate('/');
+    }
   };
   return (
     <VStack

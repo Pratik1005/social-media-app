@@ -11,17 +11,49 @@ import {
   InputRightElement,
   Box,
 } from '@chakra-ui/react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { userLogin } from '../features/auth/authSlice';
 
 const LoginForm = () => {
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || '/';
+  console.log('from', from);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const { status } = useSelector(state => state.auth);
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  });
 
   const handleShowPassword = () => {
     setShowPassword(prev => !prev);
   };
+
+  const handleInputChange = e => {
+    let newInput = { [e.target.name]: e.target.value };
+    setLoginData({ ...loginData, ...newInput });
+  };
+
+  const handleLogin = e => {
+    e.preventDefault();
+    dispatch(userLogin(loginData));
+    if (status === 'fulfilled') {
+      console.log('login fulfilled');
+      navigate(from, { replace: true });
+    }
+  };
+
+  const handleTestData = () => {
+    setLoginData({ email: 'test@gmail.com', password: 'test@123' });
+  };
   return (
     <VStack
+      onSubmit={handleLogin}
+      as="form"
       width="full"
       spacing={5}
       padding={8}
@@ -30,17 +62,25 @@ const LoginForm = () => {
       boxShadow="lg"
     >
       <Heading size="xl">Login</Heading>
-      <FormControl>
+      <FormControl isRequired>
         <FormLabel>Email</FormLabel>
-        <Input placeholder="Enter email" />
+        <Input
+          placeholder="Enter email"
+          name="email"
+          value={loginData.email}
+          onChange={e => handleInputChange(e)}
+        />
       </FormControl>
-      <FormControl>
+      <FormControl isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
             paddingRight="2rem"
             type={showPassword ? 'text' : 'password'}
             placeholder="Enter password"
+            name="password"
+            value={loginData.password}
+            onChange={e => handleInputChange(e)}
           />
           <InputRightElement width="2rem">
             <Button
@@ -58,15 +98,31 @@ const LoginForm = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <Button
-        width="full"
-        backgroundColor="#6d28d9"
-        color="#fff"
-        _hover={{ backgroundColor: '#6d28d9' }}
-      >
-        Login
+      {status === 'loading' ? (
+        <Button
+          isLoading
+          loadingText="Logging"
+          width="full"
+          backgroundColor="#6d28d9"
+          color="#fff"
+          _hover={{ backgroundColor: '#6d28d9' }}
+        >
+          Login
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          width="full"
+          backgroundColor="#6d28d9"
+          color="#fff"
+          _hover={{ backgroundColor: '#6d28d9' }}
+        >
+          Login
+        </Button>
+      )}
+      <Button width="full" onClick={handleTestData}>
+        Use test credentials
       </Button>
-      <Button width="full">Guest Login</Button>
       <Text>
         Don't have an account?{' '}
         <Link as={NavLink} to="/signup">
