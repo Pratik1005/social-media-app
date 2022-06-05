@@ -12,18 +12,17 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userLogin } from '../features/auth/authSlice';
+import { userLogin, userLogout } from '../features/auth/authSlice';
 
 const LoginForm = () => {
   const location = useLocation();
   const from = location?.state?.from?.pathname || '/';
-  console.log('from', from);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { status } = useSelector(state => state.auth);
+  const { status, userData } = useSelector(state => state.auth);
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -41,15 +40,17 @@ const LoginForm = () => {
   const handleLogin = e => {
     e.preventDefault();
     dispatch(userLogin(loginData));
-    if (status === 'fulfilled') {
-      console.log('login fulfilled');
-      navigate(from, { replace: true });
-    }
   };
 
   const handleTestData = () => {
     setLoginData({ email: 'test@gmail.com', password: 'test@123' });
   };
+
+  useEffect(() => {
+    if (!!userData) {
+      navigate(from, { replace: true });
+    }
+  }, [userData]);
   return (
     <VStack
       onSubmit={handleLogin}
@@ -62,6 +63,7 @@ const LoginForm = () => {
       boxShadow="lg"
     >
       <Heading size="xl">Login</Heading>
+      <Text>{userData?.name}</Text>
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
         <Input

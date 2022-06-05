@@ -16,50 +16,41 @@ function App() {
   const bgColor = useColorModeValue('#f7f7f7', '#171923');
   const dispatch = useDispatch();
 
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      const userObj = await getDoc(doc(db, `users/${user.uid}`));
+      const currentData = userObj.data();
+      if (currentData) {
+        dispatch(setUserData(currentData));
+      }
+    }
+  });
+
   // useEffect(() => {
   //   (() => {
   //     onAuthStateChanged(auth, async user => {
   //       if (user) {
   //         const userObj = await getDoc(doc(db, `users/${user.uid}`));
   //         const currentData = userObj.data();
-  //         console.log('currentData', currentData);
   //         if (currentData) {
   //           dispatch(setUserData(currentData));
   //         }
   //       }
   //     });
   //   })();
-  // }, []);
+  // }, [dispatch]);
+
   return (
     <Box backgroundColor={bgColor} minHeight="100vh">
       <ToastContainer autoClose={1200} />
       <Routes>
         <Route path={'/login'} element={<Login />} />
         <Route path={'/signup'} element={<SignUp />} />
-        <Route
-          path={'/'}
-          element={
-            <RequiresAuth>
-              <Home />
-            </RequiresAuth>
-          }
-        />
-        <Route
-          path={'/explore'}
-          element={
-            <RequiresAuth>
-              <Explore />
-            </RequiresAuth>
-          }
-        />
-        <Route
-          path={'/bookmarks'}
-          element={
-            <RequiresAuth>
-              <Bookmark />
-            </RequiresAuth>
-          }
-        />
+        <Route element={<RequiresAuth />}>
+          <Route path={'/'} element={<Home />} />
+          <Route path={'/explore'} element={<Explore />} />
+          <Route path={'/bookmarks'} element={<Bookmark />} />
+        </Route>
       </Routes>
     </Box>
   );

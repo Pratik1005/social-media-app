@@ -5,8 +5,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
-import { collection, addDoc, setDoc, doc, getDoc } from 'firebase/firestore';
-import { app, auth, db } from '../../firebase';
+import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 
 const initialState = {
   userData: null,
@@ -15,7 +15,7 @@ const initialState = {
 
 export const userSignUp = createAsyncThunk(
   'auth/userSignUp',
-  async ({ email, fullName, username, password }, thunkAPI) => {
+  async ({ email, fullName, username, password }) => {
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -48,12 +48,11 @@ export const userSignUp = createAsyncThunk(
 
 export const userLogin = createAsyncThunk(
   'auth/userLogin',
-  async ({ email, password }, thunkAPI) => {
+  async ({ email, password }) => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       const userRef = doc(collection(db, 'users'), response.user.uid);
       const userDetails = await getDoc(userRef);
-      console.log(userDetails.data());
       return userDetails.data();
     } catch (err) {
       console.error('login', err);
@@ -93,7 +92,10 @@ export const authSlice = createSlice({
     },
     [userLogin.fulfilled]: (state, action) => {
       state.userData = action.payload;
-      state.staus = 'fulfilled';
+      state.status = 'fulfilled';
+    },
+    [userLogout.fulfilled]: state => {
+      state.userData = null;
     },
   },
 });

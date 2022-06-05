@@ -11,13 +11,12 @@ import {
   InputRightElement,
   Box,
 } from '@chakra-ui/react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSignUp } from '../features/auth/authSlice';
 
 const SignUpForm = () => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [signUpData, setSignUpData] = useState({
     email: '',
@@ -25,8 +24,11 @@ const SignUpForm = () => {
     username: '',
     password: '',
   });
-  const { status } = useSelector(state => state.auth);
+  const { status, userData } = useSelector(state => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || '/';
 
   const handleShowPassword = () => {
     setShowPassword(prev => !prev);
@@ -40,10 +42,13 @@ const SignUpForm = () => {
   const handleSignUp = e => {
     e.preventDefault();
     dispatch(userSignUp(signUpData));
-    if (status === 'fulfilled') {
-      navigate('/');
-    }
   };
+
+  useEffect(() => {
+    if (!!userData) {
+      navigate(from, { replace: true });
+    }
+  }, [userData]);
   return (
     <VStack
       onSubmit={handleSignUp}
