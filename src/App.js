@@ -8,7 +8,6 @@ import { RequiresAuth } from './features/auth/RequiresAuth';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserData } from './features/auth/authSlice';
 
@@ -25,20 +24,6 @@ function App() {
       }
     }
   });
-
-  // useEffect(() => {
-  //   (() => {
-  //     onAuthStateChanged(auth, async user => {
-  //       if (user) {
-  //         const userObj = await getDoc(doc(db, `users/${user.uid}`));
-  //         const currentData = userObj.data();
-  //         if (currentData) {
-  //           dispatch(setUserData(currentData));
-  //         }
-  //       }
-  //     });
-  //   })();
-  // }, [dispatch]);
 
   return (
     <Box backgroundColor={bgColor} minHeight="100vh">

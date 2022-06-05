@@ -14,7 +14,7 @@ import {
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userLogin, userLogout } from '../features/auth/authSlice';
+import { userLogin } from '../features/auth/authSlice';
 
 const LoginForm = () => {
   const location = useLocation();
