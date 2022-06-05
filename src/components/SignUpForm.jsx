@@ -48,7 +48,7 @@ const SignUpForm = () => {
     if (!!userData) {
       navigate(from, { replace: true });
     }
-  }, [userData]);
+  }, [userData, navigate, from]);
   return (
     <VStack
       onSubmit={handleSignUp}
