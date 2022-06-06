@@ -1,5 +1,6 @@
-import { HStack, Box, Heading, Image, Tooltip } from '@chakra-ui/react';
-import profile_pic from '../asset/profile_pic.jpg';
+import { HStack, Box, Heading, Image, Tooltip, Link } from '@chakra-ui/react';
+import { defaultUser } from '../asset';
+import { NavLink } from 'react-router-dom';
 
 const TopBar = () => {
   return (
@@ -30,11 +31,12 @@ const TopBar = () => {
           </Box>
         </Tooltip>
 
-        <Box paddingRight={8} cursor="pointer">
+        <Box as={NavLink} to="/user/123" paddingRight={8} cursor="pointer">
           <Image
             borderRadius="full"
             boxSize="48px"
-            src={profile_pic}
+            src=""
+            fallbackSrc={defaultUser}
             alt="user"
           />
         </Box>
