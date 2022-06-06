@@ -7,3 +7,4 @@ export { Footer } from './Footer';
 export { LoginForm } from './LoginForm';
 export { SignUpForm } from './SignUpForm';
 export { ProfileCard } from './ProfileCard';
+export { AddPost } from './AddPost';
