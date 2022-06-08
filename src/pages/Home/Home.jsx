@@ -16,11 +16,12 @@ const Home = () => {
   const { userData } = useSelector(state => state.auth);
   const { homePosts, homeStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  console.log('home posts', homePosts);
 
   useEffect(() => {
-    dispatch(getHomePosts(userData.uid));
-  }, []);
+    if (homeStatus === 'idle') {
+      dispatch(getHomePosts(userData.uid));
+    }
+  }, [homeStatus, dispatch]);
 
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>
