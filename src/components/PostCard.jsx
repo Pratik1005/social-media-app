@@ -1,7 +1,21 @@
-import { VStack, HStack, Image, Text, Box, Flex } from '@chakra-ui/react';
-import profile_pic from '../asset/profile_pic.jpg';
+import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
+import { getUserProfile } from '../services';
+import { formatDate } from '../utils/utils';
 
-const PostCard = ({ isBookmark }) => {
+const PostCard = ({ postData }) => {
+  const {
+    uid,
+    id,
+    name,
+    username,
+    photoURL,
+    postText,
+    likes,
+    comments,
+    uploadDate,
+  } = postData;
+  // const userData = getUserProfile(uid);
+  const formattedDate = formatDate(uploadDate);
   return (
     <VStack
       spacing={4}
@@ -12,35 +26,25 @@ const PostCard = ({ isBookmark }) => {
       width="full"
     >
       <HStack>
-        <Image
-          boxSize="48px"
-          borderRadius="full"
-          src={profile_pic}
-          alt="user"
-        />
+        <Avatar name={name} src={photoURL} />
         <Flex justify="center" align="flex-start" flexDirection="column">
           <Text as="span" fontWeight="500">
-            Jhon Doe
+            {name}
           </Text>
           <HStack>
             <Text as="span" color="gray.600" marginTop={0}>
-              @jhondoe
+              {`@${username}`}
             </Text>
             <Text as="span" fontWeight="500">
               ·
             </Text>
             <Text as="span" fontSize="14px">
-              May 29, 2022
+              {formattedDate}
             </Text>
           </HStack>
         </Flex>
       </HStack>
-      <Text>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. A similique
-        maiores, aperiam doloribus voluptates nisi ratione nemo cupiditate in
-        non nulla praesentium culpa modi veniam harum sunt incidunt temporibus
-        placeat
-      </Text>
+      <Text>{postText}</Text>
       <HStack justify="space-between" width="full">
         <HStack cursor="pointer">
           <Box
@@ -53,7 +57,7 @@ const PostCard = ({ isBookmark }) => {
             mode_comment
           </Box>
           <Box as="span" fontSize="14px">
-            0
+            {comments.length}
           </Box>
         </HStack>
         <Box
@@ -75,7 +79,7 @@ const PostCard = ({ isBookmark }) => {
             favorite_border
           </Box>
           <Box as="span" fontSize="14px">
-            0
+            {likes}
           </Box>
         </HStack>
         <Box
@@ -85,7 +89,7 @@ const PostCard = ({ isBookmark }) => {
           fontSize="18px"
           cursor="pointer"
         >
-          {isBookmark ? 'bookmark' : 'bookmark_border'}
+          bookmark_border
         </Box>
       </HStack>
     </VStack>

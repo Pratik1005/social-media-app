@@ -37,7 +37,9 @@ export const userSignUp = createAsyncThunk(
         bookmarks: [],
       };
       const userRef = doc(collection(db, 'users'), response.user.uid);
+      const postRef = doc(collection(db, 'posts'), response.user.uid);
       await setDoc(userRef, { ...userDetails });
+      await setDoc(postRef, { posts: [] });
       return userDetails;
     } catch (err) {
       console.error('signup', err);

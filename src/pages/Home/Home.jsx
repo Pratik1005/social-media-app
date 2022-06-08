@@ -5,10 +5,23 @@ import {
   VStack,
   HStack,
   Button,
+  Spinner,
 } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getHomePosts } from '../../features/post/postSlice';
 
 const Home = () => {
+  const { userData } = useSelector(state => state.auth);
+  const { homePosts, homeStatus } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+  console.log('home posts', homePosts);
+
+  useEffect(() => {
+    dispatch(getHomePosts(userData.uid));
+  }, []);
+
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>
   );
@@ -44,9 +57,11 @@ const Home = () => {
                 Sort by
               </Button>
             </HStack>
-            {[1, 2, 3, 4, 5].map(post => (
-              <PostCard key={post} />
-            ))}
+            {homeStatus === 'loading' ? (
+              <Spinner size="xl" />
+            ) : (
+              homePosts.map(post => <PostCard key={post.id} postData={post} />)
+            )}
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">

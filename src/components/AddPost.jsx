@@ -11,9 +11,22 @@ import {
   useDisclosure,
   Avatar,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addPost } from '../features/post/postSlice';
 
 const AddPost = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [postText, setPostText] = useState('');
+  const { userData } = useSelector(state => state.auth);
+  const { uid, name, username, photoURL } = userData;
+  const dispatch = useDispatch();
+
+  const handleAddPost = () => {
+    console.log(postText);
+    dispatch(addPost({ uid, postText, name, username, photoURL }));
+    onClose();
+  };
   return (
     <>
       <Button
@@ -37,7 +50,13 @@ const AddPost = () => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Textarea placeholder="Tell your Insight..." resize="none" />
+            <Textarea
+              placeholder="Tell your Insight..."
+              resize="none"
+              rows="5"
+              value={postText}
+              onChange={e => setPostText(e.target.value)}
+            />
           </ModalBody>
 
           <ModalFooter>
@@ -47,6 +66,8 @@ const AddPost = () => {
               backgroundColor="#6D28D9"
               color="#fff"
               _hover={{ backgroundColor: '#6d28d9' }}
+              isDisabled={postText.length === 0}
+              onClick={handleAddPost}
             >
               Post
             </Button>
