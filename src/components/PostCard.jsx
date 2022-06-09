@@ -14,7 +14,6 @@ const PostCard = ({ postData }) => {
     comments,
     uploadDate,
   } = postData;
-  // const userData = getUserProfile(uid);
   const formattedDate = formatDate(uploadDate);
   return (
     <VStack

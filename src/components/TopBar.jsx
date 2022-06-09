@@ -1,8 +1,9 @@
-import { HStack, Box, Heading, Image, Tooltip, Link } from '@chakra-ui/react';
-import { defaultUser } from '../asset';
+import { HStack, Box, Heading, Tooltip, Avatar } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const TopBar = () => {
+  const { userData } = useSelector(state => state.auth);
   return (
     <HStack
       justify="space-between"
@@ -32,13 +33,7 @@ const TopBar = () => {
         </Tooltip>
 
         <Box as={NavLink} to="/user/123" paddingRight={8} cursor="pointer">
-          <Image
-            borderRadius="full"
-            boxSize="48px"
-            src=""
-            fallbackSrc={defaultUser}
-            alt="user"
-          />
+          <Avatar src={userData.photoURL} name={userData.name} />
         </Box>
       </HStack>
     </HStack>

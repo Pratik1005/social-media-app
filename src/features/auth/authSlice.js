@@ -31,6 +31,7 @@ export const userSignUp = createAsyncThunk(
         photoURL: '',
         headerImage: '',
         bio: '',
+        website: '',
         posts: [],
         followers: [],
         following: [],

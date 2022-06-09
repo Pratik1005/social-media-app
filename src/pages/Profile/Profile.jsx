@@ -1,4 +1,4 @@
-import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
+import { Container, Grid, GridItem, VStack, Text } from '@chakra-ui/react';
 import {
   NavMenu,
   TopBar,
@@ -18,9 +18,7 @@ const Profile = () => {
         <GridItem>
           <ProfileCard />
           <VStack>
-            {[1, 2, 3, 4, 5].map(post => (
-              <PostCard key={post} />
-            ))}
+            <Text>No posts to show</Text>
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">

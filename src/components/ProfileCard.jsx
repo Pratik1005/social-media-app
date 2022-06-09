@@ -7,13 +7,25 @@ import {
   Link,
   Image,
   Flex,
+  Avatar,
 } from '@chakra-ui/react';
 import { defaultUser, defaultHeader } from '../asset';
 import { userLogout } from '../features/auth/authSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
+  const { userData } = useSelector(state => state.auth);
+  const {
+    name,
+    username,
+    photoURL,
+    headerImage,
+    followers,
+    following,
+    bio,
+    website,
+  } = userData;
   return (
     <VStack
       backgroundColor="#fff"
@@ -28,7 +40,7 @@ const ProfileCard = () => {
       <VStack width="full" alignItems="flex-start" padding={4}>
         <HStack justifyContent="space-between" width="full">
           <Box width="120px" height="120px" marginTop="-80px">
-            <Image src="" fallbackSrc={defaultUser} borderRadius="full" />
+            <Avatar src={photoURL} name={name} size="2xl" />
           </Box>
           <Box>
             <Button variant="outline" marginRight={4}>
@@ -41,31 +53,31 @@ const ProfileCard = () => {
         </HStack>
         <Flex justify="center" align="flex-start" flexDirection="column">
           <Text fontWeight="500" fontSize="20px">
-            Jhon Doe
+            {name}
           </Text>
           <Text color="gray.600" marginTop={0}>
-            @jhondoe
+            {`@${username}`}
           </Text>
         </Flex>
-        <Text>Frontend Developer</Text>
+        <Text>{bio}</Text>
         <HStack>
           <Box as="span" className="material-icons">
             link
           </Box>
-          <Link href="https://pratikdevle.netlify.app/" isExternal>
-            https://pratikdevle.netlify.app/
+          <Link href={website} isExternal>
+            {website}
           </Link>
         </HStack>
         <HStack>
           <HStack paddingRight={4}>
             <Box as="span" fontWeight="500">
-              150
+              {following.length}
             </Box>
             <Text>Following</Text>
           </HStack>
           <HStack>
             <Box as="span" fontWeight="500">
-              67
+              {followers.length}
             </Box>
             <Text>Followers</Text>
           </HStack>
