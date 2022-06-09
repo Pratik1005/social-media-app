@@ -6,4 +6,17 @@ const formatDate = uploadDate => {
   return `${date} ${month}, ${year}`;
 };
 
-export { formatDate };
+const sortPosts = (posts, sortBy) => {
+  if (sortBy === 'newest') {
+    return [...posts].sort(
+      (post1, post2) => new Date(post2.uploadDate) - new Date(post1.uploadDate)
+    );
+  }
+  if (sortBy === 'oldest') {
+    return [...posts].sort(
+      (post1, post2) => new Date(post1.uploadDate) - new Date(post2.uploadDate)
+    );
+  }
+};
+
+export { formatDate, sortPosts };

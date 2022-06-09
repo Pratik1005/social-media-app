@@ -12,10 +12,12 @@ import {
 import { defaultHeader } from '../asset';
 import { userLogout } from '../features/auth/authSlice';
 import { useDispatch } from 'react-redux';
+import { ProfileCta } from './index';
 
 const ProfileCard = ({ userData }) => {
   const dispatch = useDispatch();
   const {
+    uid,
     name,
     username,
     photoURL,
@@ -42,12 +44,7 @@ const ProfileCard = ({ userData }) => {
             <Avatar src={photoURL} name={name} size="2xl" />
           </Box>
           <Box>
-            <Button variant="outline" marginRight={4}>
-              Edit Profile
-            </Button>
-            <Button colorScheme="red" onClick={() => dispatch(userLogout())}>
-              Logout
-            </Button>
+            <ProfileCta uid={uid} />
           </Box>
         </HStack>
         <Flex justify="center" align="flex-start" flexDirection="column">

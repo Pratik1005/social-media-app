@@ -8,3 +8,4 @@ export { LoginForm } from './LoginForm';
 export { SignUpForm } from './SignUpForm';
 export { ProfileCard } from './ProfileCard';
 export { AddPost } from './AddPost';
+export { ProfileCta } from './ProfileCta';

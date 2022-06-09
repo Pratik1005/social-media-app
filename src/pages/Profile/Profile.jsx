@@ -25,10 +25,8 @@ const Profile = () => {
   const { userProfile, status } = useSelector(state => state.user);
 
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(getUserProfile(params.uid));
-    }
-  }, [params.uid]);
+    dispatch(getUserProfile(params.uid));
+  }, []);
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />
@@ -51,7 +49,7 @@ const Profile = () => {
               </VStack>
             </>
           ) : (
-            <HStack>
+            <HStack justifyContent="center">
               <Spinner size="xl" />
             </HStack>
           )}

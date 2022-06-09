@@ -5,6 +5,7 @@ import {
   VStack,
   Heading,
   Text,
+  Spinner,
 } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,11 +14,11 @@ import { getExplorePosts } from '../../features/post/postSlice';
 
 const Explore = () => {
   const dispatch = useDispatch();
-  const { explorePosts, status } = useSelector(state => state.post);
+  const { explorePosts, exploreStatus } = useSelector(state => state.post);
 
-  // useEffect(() => {
-  //   dispatch(getExplorePosts());
-  // }, []);
+  useEffect(() => {
+    dispatch(getExplorePosts());
+  }, []);
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />
@@ -30,11 +31,13 @@ const Explore = () => {
             <Heading fontSize="25px" paddingBottom={2}>
               Explore
             </Heading>
-            {/* {status === "fulfilled" ? (
-              explorePosts.map(post => <PostCard key={post.uid} postData={post} />)
-            ): (
-              <Text>Loading...</Text>
-            )} */}
+            {exploreStatus === 'fulfilled' ? (
+              explorePosts.map(post => (
+                <PostCard key={post.id} postData={post} />
+              ))
+            ) : (
+              <Spinner size="xl" />
+            )}
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">

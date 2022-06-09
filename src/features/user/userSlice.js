@@ -22,7 +22,6 @@ export const getUserProfile = createAsyncThunk(
       if (postSnap.exists()) {
         userProfile.userPosts = postSnap.data().posts;
       }
-      console.log('userProfile', userProfile);
       return userProfile;
     } catch (err) {
       console.error('get user profile', err);

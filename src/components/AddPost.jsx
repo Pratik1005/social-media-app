@@ -23,7 +23,6 @@ const AddPost = () => {
   const dispatch = useDispatch();
 
   const handleAddPost = () => {
-    console.log(postText);
     dispatch(addPost({ uid, postText, name, username, photoURL }));
     onClose();
   };
@@ -46,7 +45,7 @@ const AddPost = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Avatar name="Jhon doe" src="" />
+            <Avatar name={name} src={photoURL} />
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>

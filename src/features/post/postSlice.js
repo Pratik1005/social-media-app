@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
+import { sortPosts } from '../../utils/utils';
 
 const initialState = {
   homePosts: [],
@@ -41,7 +42,6 @@ export const addPost = createAsyncThunk(
       await updateDoc(postRef, {
         posts: arrayUnion({ ...newPost }),
       });
-      console.log('new post', newPost);
       return newPost;
     } catch (err) {
       console.error('add post', err);
@@ -65,10 +65,12 @@ export const getExplorePosts = createAsyncThunk(
   'post/getExplorePosts',
   async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'users'));
-      const allPosts = [];
-      querySnapshot.forEach(doc => allPosts.push(doc.data()));
-      return allPosts;
+      const querySnapshot = await getDocs(collection(db, 'posts'));
+      let allPosts = [];
+      querySnapshot.forEach(
+        doc => (allPosts = [...allPosts, ...doc.data().posts])
+      );
+      return sortPosts(allPosts, 'newest');
     } catch (err) {
       console.error('get explore posts', err);
     }
@@ -95,11 +97,11 @@ export const postSlice = createSlice({
       state.homeStatus = 'fulfilled';
     },
     [getExplorePosts.pending]: state => {
-      state.status = 'loading';
+      state.exploreStatus = 'loading';
     },
     [getExplorePosts.fulfilled]: (state, action) => {
       state.explorePosts = action.payload;
-      state.status = 'fulfilled';
+      state.exploreStatus = 'fulfilled';
     },
   },
 });
