@@ -1,4 +1,11 @@
-import { Container, Grid, GridItem, VStack, Heading } from '@chakra-ui/react';
+import {
+  Container,
+  Grid,
+  GridItem,
+  VStack,
+  Heading,
+  Text,
+} from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 
 const Bookmark = () => {
@@ -14,9 +21,7 @@ const Bookmark = () => {
             <Heading fontSize="25px" paddingBottom={2}>
               Bookmarks
             </Heading>
-            {[1, 2].map(post => (
-              <PostCard key={post} isBookmark={true} />
-            ))}
+            <Text>No bookmarks to show</Text>
           </VStack>
         </GridItem>
         <GridItem position="sticky" top="74">

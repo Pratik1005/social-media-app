@@ -9,13 +9,12 @@ import {
   Flex,
   Avatar,
 } from '@chakra-ui/react';
-import { defaultUser, defaultHeader } from '../asset';
+import { defaultHeader } from '../asset';
 import { userLogout } from '../features/auth/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-const ProfileCard = () => {
+const ProfileCard = ({ userData }) => {
   const dispatch = useDispatch();
-  const { userData } = useSelector(state => state.auth);
   const {
     name,
     username,
@@ -35,7 +34,7 @@ const ProfileCard = () => {
       marginBottom={4}
     >
       <Box>
-        <Image src="" fallbackSrc={defaultHeader} />
+        <Image src={headerImage} fallbackSrc={defaultHeader} />
       </Box>
       <VStack width="full" alignItems="flex-start" padding={4}>
         <HStack justifyContent="space-between" width="full">

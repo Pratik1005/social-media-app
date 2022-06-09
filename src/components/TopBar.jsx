@@ -32,7 +32,12 @@ const TopBar = () => {
           </Box>
         </Tooltip>
 
-        <Box as={NavLink} to="/user/123" paddingRight={8} cursor="pointer">
+        <Box
+          as={NavLink}
+          to={`/user/${userData.uid}`}
+          paddingRight={8}
+          cursor="pointer"
+        >
           <Avatar src={userData.photoURL} name={userData.name} />
         </Box>
       </HStack>

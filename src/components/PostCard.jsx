@@ -1,6 +1,6 @@
 import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
-import { getUserProfile } from '../services';
 import { formatDate } from '../utils/utils';
+import { NavLink } from 'react-router-dom';
 
 const PostCard = ({ postData }) => {
   const {
@@ -25,7 +25,9 @@ const PostCard = ({ postData }) => {
       width="full"
     >
       <HStack>
-        <Avatar name={name} src={photoURL} />
+        <Box as={NavLink} to={`/user/${uid}`}>
+          <Avatar name={name} src={photoURL} />
+        </Box>
         <Flex justify="center" align="flex-start" flexDirection="column">
           <Text as="span" fontWeight="500">
             {name}
