@@ -1,10 +1,18 @@
-import { createSlice, createAsyncThunk, nanoid } from '@reduxjs/toolkit';
-import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  getDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const initialState = {
+  currentUser: {},
   userProfile: {},
   status: 'idle',
+  followStatus: 'idle',
 };
 
 export const getUserProfile = createAsyncThunk(
@@ -32,7 +40,6 @@ export const getUserProfile = createAsyncThunk(
 export const followUser = createAsyncThunk(
   'user/followUser',
   async ({ currentUserData, uid, name, username, photoURL }) => {
-    console.log('followuser', currentUserData, uid, name, username, photoURL);
     try {
       // Add current user to user followers
       const followUserRef = doc(db, 'users', uid);
@@ -51,9 +58,37 @@ export const followUser = createAsyncThunk(
       await updateDoc(currentUserRef, {
         following: arrayUnion(followUserData),
       });
-      return userData;
+      return { userData, followUserData };
     } catch (err) {
       console.error('follow user', err);
+    }
+  }
+);
+
+export const unfollowUser = createAsyncThunk(
+  'user/unfollowUser',
+  async ({ currentUserData, unfollowUserData }) => {
+    try {
+      // remove current user from user followers
+      const unfollowUserRef = doc(db, 'users', unfollowUserData.uid);
+      await updateDoc(unfollowUserRef, {
+        followers: unfollowUserData.followers.filter(
+          user => user.uid !== currentUserData.uid
+        ),
+      });
+      // remove user from current user following
+      const currentUserRef = doc(db, 'users', currentUserData.uid);
+      await updateDoc(currentUserRef, {
+        following: currentUserData.followers.filter(
+          user => user.uid !== unfollowUserData.uid
+        ),
+      });
+      return {
+        currentUserId: currentUserData.uid,
+        unfollowUserId: unfollowUserData.uid,
+      };
+    } catch (err) {
+      console.error('unfollow user', err);
     }
   }
 );
@@ -61,7 +96,11 @@ export const followUser = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    saveCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
+  },
   extraReducers: {
     [getUserProfile.pending]: state => {
       state.status = 'pending';
@@ -70,10 +109,29 @@ const userSlice = createSlice({
       state.userProfile = action.payload;
       state.status = 'fulfilled';
     },
+    [followUser.pending]: state => {
+      state.followStatus = 'pending';
+    },
     [followUser.fulfilled]: (state, action) => {
-      state.userProfile.userData.followers.push(action.payload);
+      state.userProfile.userData.followers.push(action.payload.userData);
+      state.currentUser.following.push(action.payload.followUserData);
+      state.followStatus = 'fulfilled';
+    },
+    [unfollowUser.pending]: state => {
+      state.followStatus = 'pending';
+    },
+    [unfollowUser.fulfilled]: (state, action) => {
+      state.userProfile.userData.followers =
+        state.userProfile.userData.followers.filter(
+          user => user.uid !== action.payload.currentUserId
+        );
+      state.currentUser.following = state.currentUser.following.filter(
+        user => user.uid !== action.payload.unfollowUserId
+      );
+      state.followStatus = 'fulfilled';
     },
   },
 });
 
+export const { saveCurrentUser } = userSlice.actions;
 export default userSlice.reducer;

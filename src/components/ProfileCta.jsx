@@ -1,21 +1,25 @@
 import { Button } from '@chakra-ui/react';
 import { userLogout } from '../features/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { followUser } from '../features/user/userSlice';
+import { followUser, unfollowUser } from '../features/user/userSlice';
 
 const ProfileCta = ({ followUserData }) => {
   const dispatch = useDispatch();
-  const { userData } = useSelector(state => state.auth);
-  const currentUserData = { ...userData };
-  console.log('userData', userData);
+  const { currentUser, userProfile, followStatus } = useSelector(
+    state => state.user
+  );
+  const currentUserData = { ...currentUser };
+  const unfollowUserData = { ...userProfile.userData };
+
   const FollowOrUnfollow = () => {
     return (
       <>
-        {userData.following.find(user => user.uid === followUserData.uid) ? (
+        {currentUser.following.find(user => user.uid === followUserData.uid) ? (
           <Button
             variant="outline"
+            isLoading={followStatus === 'pending'}
             onClick={() =>
-              dispatch(followUser({ currentUserData, ...followUserData }))
+              dispatch(unfollowUser({ currentUserData, unfollowUserData }))
             }
           >
             Unfollow
@@ -23,6 +27,7 @@ const ProfileCta = ({ followUserData }) => {
         ) : (
           <Button
             variant="outline"
+            isLoading={followStatus === 'pending'}
             onClick={() =>
               dispatch(followUser({ currentUserData, ...followUserData }))
             }
@@ -35,7 +40,7 @@ const ProfileCta = ({ followUserData }) => {
   };
   return (
     <>
-      {userData.uid === followUserData.uid ? (
+      {currentUser.uid === followUserData.uid ? (
         <>
           <Button variant="outline" marginRight={4}>
             Edit Profile

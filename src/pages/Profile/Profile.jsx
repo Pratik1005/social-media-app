@@ -17,15 +17,17 @@ import {
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserProfile } from '../../features/user/userSlice';
+import { getUserProfile, saveCurrentUser } from '../../features/user/userSlice';
 
 const Profile = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { userProfile, status } = useSelector(state => state.user);
+  const { userData } = useSelector(state => state.auth);
 
   useEffect(() => {
     dispatch(getUserProfile(params.uid));
+    dispatch(saveCurrentUser(userData));
   }, [params.uid]);
   return (
     <Container maxWidth="container.xl" padding={0}>

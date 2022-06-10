@@ -22,7 +22,6 @@ export const userSignUp = createAsyncThunk(
         email,
         password
       );
-      console.log('createUser', response.user);
       const userDetails = {
         uid: response.user.uid,
         email,
