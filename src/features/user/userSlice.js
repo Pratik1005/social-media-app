@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getDoc, doc } from 'firebase/firestore';
+import { createSlice, createAsyncThunk, nanoid } from '@reduxjs/toolkit';
+import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const initialState = {
@@ -29,6 +29,35 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
+export const followUser = createAsyncThunk(
+  'user/followUser',
+  async ({ currentUserData, uid, name, username, photoURL }) => {
+    console.log('followuser', currentUserData, uid, name, username, photoURL);
+    try {
+      // Add current user to user followers
+      const followUserRef = doc(db, 'users', uid);
+      const userData = {
+        uid: currentUserData.uid,
+        name: currentUserData.name,
+        username: currentUserData.username,
+        photoURL: currentUserData.photoURL,
+      };
+      await updateDoc(followUserRef, {
+        followers: arrayUnion(userData),
+      });
+      // Add user to current user following
+      const currentUserRef = doc(db, 'users', currentUserData.uid);
+      const followUserData = { uid, name, username, photoURL };
+      await updateDoc(currentUserRef, {
+        following: arrayUnion(followUserData),
+      });
+      return userData;
+    } catch (err) {
+      console.error('follow user', err);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -40,6 +69,9 @@ const userSlice = createSlice({
     [getUserProfile.fulfilled]: (state, action) => {
       state.userProfile = action.payload;
       state.status = 'fulfilled';
+    },
+    [followUser.fulfilled]: (state, action) => {
+      state.userProfile.userData.followers.push(action.payload);
     },
   },
 });

@@ -18,10 +18,8 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (homeStatus === 'idle') {
-      dispatch(getHomePosts(userData.uid));
-    }
-  }, [homeStatus, dispatch]);
+    dispatch(getHomePosts(userData.uid));
+  }, []);
 
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>

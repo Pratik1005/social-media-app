@@ -27,6 +27,7 @@ const ProfileCard = ({ userData }) => {
     bio,
     website,
   } = userData;
+
   return (
     <VStack
       backgroundColor="#fff"
@@ -44,7 +45,7 @@ const ProfileCard = ({ userData }) => {
             <Avatar src={photoURL} name={name} size="2xl" />
           </Box>
           <Box>
-            <ProfileCta uid={uid} />
+            <ProfileCta followUserData={{ uid, name, username, photoURL }} />
           </Box>
         </HStack>
         <Flex justify="center" align="flex-start" flexDirection="column">
@@ -55,15 +56,17 @@ const ProfileCard = ({ userData }) => {
             {`@${username}`}
           </Text>
         </Flex>
-        <Text>{bio}</Text>
-        <HStack>
-          <Box as="span" className="material-icons">
-            link
-          </Box>
-          <Link href={website} isExternal>
-            {website}
-          </Link>
-        </HStack>
+        {bio && <Text>{bio}</Text>}
+        {website && (
+          <HStack>
+            <Box as="span" className="material-icons">
+              link
+            </Box>
+            <Link href={website} isExternal>
+              {website}
+            </Link>
+          </HStack>
+        )}
         <HStack>
           <HStack paddingRight={4}>
             <Box as="span" fontWeight="500">

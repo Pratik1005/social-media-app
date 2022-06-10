@@ -26,7 +26,7 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(getUserProfile(params.uid));
-  }, []);
+  }, [params.uid]);
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />
