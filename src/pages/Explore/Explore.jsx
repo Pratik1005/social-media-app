@@ -24,7 +24,7 @@ const Explore = () => {
         following: currentUser.following,
       })
     );
-  }, []);
+  }, [currentUser.following, currentUser.uid, dispatch]);
   return (
     <Container maxWidth="container.xl" padding={0}>
       <TopBar />

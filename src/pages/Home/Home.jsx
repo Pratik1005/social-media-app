@@ -22,7 +22,7 @@ const Home = () => {
     dispatch(
       getHomePosts({ uid: currentUser.uid, following: currentUser.following })
     );
-  }, []);
+  }, [currentUser.following, currentUser.uid, dispatch]);
 
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>

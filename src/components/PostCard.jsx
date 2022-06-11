@@ -5,7 +5,6 @@ import { NavLink } from 'react-router-dom';
 const PostCard = ({ postData }) => {
   const {
     uid,
-    id,
     name,
     username,
     photoURL,

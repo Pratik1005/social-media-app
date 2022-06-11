@@ -1,4 +1,4 @@
-import { VStack, Box, HStack, Text, Button } from '@chakra-ui/react';
+import { VStack, Box, HStack, Text } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import { AddPost } from './index';
 

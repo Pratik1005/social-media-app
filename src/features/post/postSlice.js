@@ -4,7 +4,6 @@ import {
   doc,
   updateDoc,
   getDocs,
-  getDoc,
   collection,
 } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
