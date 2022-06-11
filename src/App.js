@@ -10,6 +10,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { useDispatch } from 'react-redux';
 import { setUserData } from './features/auth/authSlice';
+import { saveCurrentUser } from './features/user/userSlice';
 
 function App() {
   const bgColor = useColorModeValue('#f7f7f7', '#171923');
@@ -21,6 +22,7 @@ function App() {
       const currentData = userObj.data();
       if (currentData) {
         dispatch(setUserData(currentData));
+        dispatch(saveCurrentUser(currentData));
       }
     }
   });

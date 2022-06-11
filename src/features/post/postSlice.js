@@ -49,28 +49,45 @@ export const addPost = createAsyncThunk(
   }
 );
 
-export const getHomePosts = createAsyncThunk('post/getHomePost', async uid => {
+const getAllPost = async () => {
   try {
-    const docRef = doc(db, 'posts', uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data().posts;
-    }
+    const querySnapshot = await getDocs(collection(db, 'posts'));
+    let allPosts = [];
+    querySnapshot.forEach(
+      doc => (allPosts = [...allPosts, ...doc.data().posts])
+    );
+    return allPosts;
   } catch (err) {
-    console.error('get home posts', err);
+    console.error('get all posts', err);
   }
-});
+};
+
+export const getHomePosts = createAsyncThunk(
+  'post/getHomePost',
+  async ({ uid, following }) => {
+    try {
+      const allPosts = await getAllPost();
+      const homePosts = allPosts.filter(post =>
+        following.some(item => item.uid === post.uid)
+      );
+      homePosts.push(...allPosts.filter(post => post.uid === uid));
+      return sortPosts(homePosts, 'newest');
+    } catch (err) {
+      console.error('get home posts', err);
+    }
+  }
+);
 
 export const getExplorePosts = createAsyncThunk(
   'post/getExplorePosts',
-  async () => {
+  async ({ uid, following }) => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'posts'));
-      let allPosts = [];
-      querySnapshot.forEach(
-        doc => (allPosts = [...allPosts, ...doc.data().posts])
+      const allPosts = await getAllPost();
+      const filterPosts = allPosts.filter(
+        post => !following.some(item => item.uid === post.uid)
       );
-      return sortPosts(allPosts, 'newest');
+      const explorePosts = filterPosts.filter(post => post.uid !== uid);
+      return sortPosts(explorePosts, 'newest');
     } catch (err) {
       console.error('get explore posts', err);
     }
@@ -86,7 +103,7 @@ export const postSlice = createSlice({
       state.postStatus = 'loading';
     },
     [addPost.fulfilled]: (state, action) => {
-      state.homePosts.push(action.payload);
+      state.homePosts.unshift(action.payload);
       state.postStatus = 'fulfilled';
     },
     [getHomePosts.pending]: state => {

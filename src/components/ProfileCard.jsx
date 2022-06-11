@@ -2,7 +2,6 @@ import {
   VStack,
   Box,
   HStack,
-  Button,
   Text,
   Link,
   Image,
@@ -10,12 +9,9 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { defaultHeader } from '../asset';
-import { userLogout } from '../features/auth/authSlice';
-import { useDispatch } from 'react-redux';
 import { ProfileCta } from './index';
 
 const ProfileCard = ({ userData }) => {
-  const dispatch = useDispatch();
   const {
     uid,
     name,

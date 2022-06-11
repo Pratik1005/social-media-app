@@ -6,6 +6,7 @@ import {
   HStack,
   Button,
   Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,12 +14,14 @@ import { useEffect } from 'react';
 import { getHomePosts } from '../../features/post/postSlice';
 
 const Home = () => {
-  const { userData } = useSelector(state => state.auth);
+  const { currentUser } = useSelector(state => state.user);
   const { homePosts, homeStatus } = useSelector(state => state.post);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getHomePosts(userData.uid));
+    dispatch(
+      getHomePosts({ uid: currentUser.uid, following: currentUser.following })
+    );
   }, []);
 
   const TrendIcon = () => (
@@ -59,7 +62,15 @@ const Home = () => {
             {homeStatus === 'loading' ? (
               <Spinner size="xl" />
             ) : (
-              homePosts.map(post => <PostCard key={post.id} postData={post} />)
+              <>
+                {homePosts.length > 0 ? (
+                  homePosts.map(post => (
+                    <PostCard key={post.id} postData={post} />
+                  ))
+                ) : (
+                  <Text>No post to show</Text>
+                )}
+              </>
             )}
           </VStack>
         </GridItem>

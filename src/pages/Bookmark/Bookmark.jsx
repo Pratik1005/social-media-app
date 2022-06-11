@@ -6,7 +6,7 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
+import { NavMenu, TopBar, WhoToFollow } from '../../components';
 
 const Bookmark = () => {
   return (

@@ -15,9 +15,15 @@ import { getExplorePosts } from '../../features/post/postSlice';
 const Explore = () => {
   const dispatch = useDispatch();
   const { explorePosts, exploreStatus } = useSelector(state => state.post);
+  const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
-    dispatch(getExplorePosts());
+    dispatch(
+      getExplorePosts({
+        uid: currentUser.uid,
+        following: currentUser.following,
+      })
+    );
   }, []);
   return (
     <Container maxWidth="container.xl" padding={0}>
@@ -32,9 +38,15 @@ const Explore = () => {
               Explore
             </Heading>
             {exploreStatus === 'fulfilled' ? (
-              explorePosts.map(post => (
-                <PostCard key={post.id} postData={post} />
-              ))
+              <>
+                {explorePosts.length > 0 ? (
+                  explorePosts.map(post => (
+                    <PostCard key={post.id} postData={post} />
+                  ))
+                ) : (
+                  <Text>No post to show</Text>
+                )}
+              </>
             ) : (
               <Spinner size="xl" />
             )}

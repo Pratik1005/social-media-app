@@ -14,7 +14,7 @@ const ProfileCta = ({ followUserData }) => {
   const FollowOrUnfollow = () => {
     return (
       <>
-        {currentUser.following.find(user => user.uid === followUserData.uid) ? (
+        {currentUser.following.some(user => user.uid === followUserData.uid) ? (
           <Button
             variant="outline"
             isLoading={followStatus === 'pending'}
