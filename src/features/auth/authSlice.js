@@ -22,7 +22,6 @@ export const userSignUp = createAsyncThunk(
         email,
         password
       );
-      console.log('createUser', response.user);
       const userDetails = {
         uid: response.user.uid,
         email,
@@ -31,13 +30,16 @@ export const userSignUp = createAsyncThunk(
         photoURL: '',
         headerImage: '',
         bio: '',
+        website: '',
         posts: [],
         followers: [],
         following: [],
         bookmarks: [],
       };
       const userRef = doc(collection(db, 'users'), response.user.uid);
+      const postRef = doc(collection(db, 'posts'), response.user.uid);
       await setDoc(userRef, { ...userDetails });
+      await setDoc(postRef, { posts: [] });
       return userDetails;
     } catch (err) {
       console.error('signup', err);

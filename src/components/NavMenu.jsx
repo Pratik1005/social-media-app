@@ -1,5 +1,6 @@
-import { VStack, Box, HStack, Text, Button } from '@chakra-ui/react';
+import { VStack, Box, HStack, Text } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
+import { AddPost } from './index';
 
 const getActiveStyle = ({ isActive }) => ({
   fontWeight: isActive ? '800' : '500',
@@ -54,17 +55,7 @@ const NavMenu = () => {
         <Text>Bookmarks</Text>
       </HStack>
       <Box width="full" paddingTop={5}>
-        <Button
-          size="lg"
-          width="full"
-          borderRadius="full"
-          backgroundColor="#6D28D9"
-          color="#fff"
-          variant="solid"
-          _hover={{ backgroundColor: '#6d28d9' }}
-        >
-          Add Post
-        </Button>
+        <AddPost />
       </Box>
     </VStack>
   );
