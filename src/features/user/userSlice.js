@@ -7,11 +7,12 @@ const initialState = {
   userProfile: {},
   status: 'idle',
   followStatus: 'idle',
+  error: null,
 };
 
 export const getUserProfile = createAsyncThunk(
   'user/getUserProfile',
-  async uid => {
+  async (uid, thunkAPI) => {
     try {
       const userProfile = {};
       const userRef = doc(db, 'users', uid);
@@ -26,14 +27,14 @@ export const getUserProfile = createAsyncThunk(
       }
       return userProfile;
     } catch (err) {
-      console.error('get user profile', err);
+      thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
 export const followUser = createAsyncThunk(
   'user/followUser',
-  async ({ currentUserData, uid, name, username, photoURL }) => {
+  async ({ currentUserData, uid, name, username, photoURL }, thunkAPI) => {
     try {
       // Add current user to user followers
       const followUserRef = doc(db, 'users', uid);
@@ -54,14 +55,14 @@ export const followUser = createAsyncThunk(
       });
       return { userData, followUserData };
     } catch (err) {
-      console.error('follow user', err);
+      thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
 export const unfollowUser = createAsyncThunk(
   'user/unfollowUser',
-  async ({ currentUserData, unfollowUserData }) => {
+  async ({ currentUserData, unfollowUserData }, thunkAPI) => {
     try {
       // remove current user from user followers
       const unfollowUserRef = doc(db, 'users', unfollowUserData.uid);
@@ -82,7 +83,7 @@ export const unfollowUser = createAsyncThunk(
         unfollowUserId: unfollowUserData.uid,
       };
     } catch (err) {
-      console.error('unfollow user', err);
+      thunkAPI.rejectWithValue(err.message);
     }
   }
 );
@@ -98,21 +99,32 @@ const userSlice = createSlice({
   extraReducers: {
     [getUserProfile.pending]: state => {
       state.status = 'pending';
+      state.error = null;
     },
     [getUserProfile.fulfilled]: (state, action) => {
       state.userProfile = action.payload;
       state.status = 'fulfilled';
+      state.error = null;
+    },
+    [getUserProfile.rejected]: (state, action) => {
+      state.error = action.payload;
     },
     [followUser.pending]: state => {
       state.followStatus = 'pending';
+      state.error = null;
     },
     [followUser.fulfilled]: (state, action) => {
       state.userProfile.userData.followers.push(action.payload.userData);
       state.currentUser.following.push(action.payload.followUserData);
       state.followStatus = 'fulfilled';
+      state.error = null;
+    },
+    [followUser.rejected]: (state, action) => {
+      state.error = action.payload;
     },
     [unfollowUser.pending]: state => {
       state.followStatus = 'pending';
+      state.error = null;
     },
     [unfollowUser.fulfilled]: (state, action) => {
       state.userProfile.userData.followers =
@@ -123,6 +135,10 @@ const userSlice = createSlice({
         user => user.uid !== action.payload.unfollowUserId
       );
       state.followStatus = 'fulfilled';
+      state.error = null;
+    },
+    [unfollowUser.rejected]: (state, action) => {
+      state.error = action.payload;
     },
   },
 });

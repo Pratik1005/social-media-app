@@ -22,7 +22,7 @@ import { getUserProfile } from '../../features/user/userSlice';
 const Profile = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const { userProfile, status } = useSelector(state => state.user);
+  const { userProfile, status, error } = useSelector(state => state.user);
 
   useEffect(() => {
     dispatch(getUserProfile(params.uid));
@@ -35,6 +35,7 @@ const Profile = () => {
           <NavMenu />
         </GridItem>
         <GridItem>
+          {error && <Text>{error}</Text>}
           {status === 'fulfilled' ? (
             <>
               <ProfileCard userData={userProfile.userData} />

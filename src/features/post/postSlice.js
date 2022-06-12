@@ -19,11 +19,12 @@ const initialState = {
   exploreStatus: 'idle',
   bookmarkStatus: 'idle',
   postStatus: 'idle',
+  error: null,
 };
 
 export const addPost = createAsyncThunk(
   'post/addPost',
-  async ({ uid, postText, name, username, photoURL }) => {
+  async ({ uid, postText, name, username, photoURL }, thunkAPI) => {
     try {
       const postRef = doc(collection(db, 'posts'), uid);
       const postId = nanoid();
@@ -43,12 +44,12 @@ export const addPost = createAsyncThunk(
       });
       return newPost;
     } catch (err) {
-      console.error('add post', err);
+      thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
-const getAllPost = async () => {
+const getAllPost = async (_, thunkAPI) => {
   try {
     const querySnapshot = await getDocs(collection(db, 'posts'));
     let allPosts = [];
@@ -57,13 +58,13 @@ const getAllPost = async () => {
     );
     return allPosts;
   } catch (err) {
-    console.error('get all posts', err);
+    return thunkAPI.rejectWithValue(err.message);
   }
 };
 
 export const getHomePosts = createAsyncThunk(
   'post/getHomePost',
-  async ({ uid, following }) => {
+  async ({ uid, following }, thunkAPI) => {
     try {
       const allPosts = await getAllPost();
       const homePosts = allPosts.filter(post =>
@@ -72,14 +73,14 @@ export const getHomePosts = createAsyncThunk(
       homePosts.push(...allPosts.filter(post => post.uid === uid));
       return sortPosts(homePosts, 'newest');
     } catch (err) {
-      console.error('get home posts', err);
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
 export const getExplorePosts = createAsyncThunk(
   'post/getExplorePosts',
-  async ({ uid, following }) => {
+  async ({ uid, following }, thunkAPI) => {
     try {
       const allPosts = await getAllPost();
       const filterPosts = allPosts.filter(
@@ -88,7 +89,7 @@ export const getExplorePosts = createAsyncThunk(
       const explorePosts = filterPosts.filter(post => post.uid !== uid);
       return sortPosts(explorePosts, 'newest');
     } catch (err) {
-      console.error('get explore posts', err);
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
@@ -100,24 +101,39 @@ export const postSlice = createSlice({
   extraReducers: {
     [addPost.pending]: state => {
       state.postStatus = 'loading';
+      state.error = null;
     },
     [addPost.fulfilled]: (state, action) => {
       state.homePosts.unshift(action.payload);
       state.postStatus = 'fulfilled';
+      state.error = null;
+    },
+    [addPost.rejected]: (state, action) => {
+      state.error = action.payload;
     },
     [getHomePosts.pending]: state => {
       state.homeStatus = 'loading';
+      state.error = null;
     },
     [getHomePosts.fulfilled]: (state, action) => {
       state.homePosts = action.payload;
       state.homeStatus = 'fulfilled';
+      state.error = null;
+    },
+    [getHomePosts.rejected]: (state, action) => {
+      state.error = action.payload;
     },
     [getExplorePosts.pending]: state => {
       state.exploreStatus = 'loading';
+      state.error = null;
     },
     [getExplorePosts.fulfilled]: (state, action) => {
       state.explorePosts = action.payload;
       state.exploreStatus = 'fulfilled';
+      state.error = null;
+    },
+    [getExplorePosts.rejected]: (state, action) => {
+      state.error = action.payload;
     },
   },
 });
