@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuList, MenuItem, Box } from '@chakra-ui/react';
+import { EditPost } from './index';
 
-const PostOption = () => {
+const PostOption = ({ postData }) => {
   return (
     <Menu>
       <MenuButton>
@@ -9,8 +10,8 @@ const PostOption = () => {
         </Box>
       </MenuButton>
       <MenuList minWidth={140}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Delete</MenuItem>
+        <EditPost postData={postData} />
+        <MenuItem color="red.600">Delete</MenuItem>
       </MenuList>
     </Menu>
   );

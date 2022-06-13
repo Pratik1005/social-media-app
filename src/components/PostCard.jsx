@@ -48,7 +48,7 @@ const PostCard = ({ postData }) => {
             </HStack>
           </Flex>
         </HStack>
-        {currentUser.uid === uid && <PostOption />}
+        {currentUser.uid === uid && <PostOption postData={postData} />}
       </Flex>
       <Text>{postText}</Text>
       <HStack justify="space-between" width="full">

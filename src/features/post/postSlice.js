@@ -5,18 +5,22 @@ import {
   updateDoc,
   getDocs,
   collection,
+  getDoc,
 } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import { sortPosts } from '../../utils/utils';
+import { toast } from 'react-toastify';
 
 const initialState = {
   homePosts: [],
   explorePosts: [],
+  userPosts: [],
   bookmarks: [],
   newPost: {},
   homeStatus: 'idle',
   exploreStatus: 'idle',
+  userPostsStatus: 'idle',
   bookmarkStatus: 'idle',
   postStatus: 'idle',
   error: null,
@@ -43,6 +47,46 @@ export const addPost = createAsyncThunk(
         posts: arrayUnion({ ...newPost }),
       });
       return newPost;
+    } catch (err) {
+      thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getUserPosts = createAsyncThunk(
+  'post/getUserPost',
+  async (uid, thunkAPI) => {
+    try {
+      const docRef = doc(db, 'posts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return sortPosts(docSnap.data().posts, 'newest');
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const editPost = createAsyncThunk(
+  'post/editPost',
+  async ({ uid, id, postNewText, currentLocation }, thunkAPI) => {
+    try {
+      const docRef = doc(db, 'posts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userAllPosts = docSnap.data().posts;
+        const updatedPosts = userAllPosts.map(post => {
+          if (post.id === id) {
+            return { ...post, postText: postNewText };
+          }
+          return post;
+        });
+        await updateDoc(docRef, {
+          posts: updatedPosts,
+        });
+        return { uid, id, postNewText, currentLocation };
+      }
     } catch (err) {
       thunkAPI.rejectWithValue(err.message);
     }
@@ -107,9 +151,45 @@ export const postSlice = createSlice({
       state.homePosts.unshift(action.payload);
       state.postStatus = 'fulfilled';
       state.error = null;
+      toast.success('Added post successfully');
     },
     [addPost.rejected]: (state, action) => {
       state.error = action.payload;
+    },
+    [editPost.fulfilled]: (state, action) => {
+      if (action.payload.currentLocation === '/') {
+        const updatedHomePosts = state.homePosts.map(post => {
+          if (post.id === action.payload.id) {
+            return { ...post, postText: action.payload.postNewText };
+          }
+          return post;
+        });
+        state.homePosts = updatedHomePosts;
+        state.error = null;
+      }
+      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
+        const updatedUserPosts = state.userPosts.map(post => {
+          if (post.id === action.payload.id) {
+            return { ...post, postText: action.payload.postNewText };
+          }
+          return post;
+        });
+        state.userPosts = updatedUserPosts;
+        state.error = null;
+      }
+      toast.success('Edited post successfully');
+    },
+    [editPost.rejected]: (state, action) => {
+      state.error = action.payload;
+    },
+    [getUserPosts.loading]: state => {
+      state.userPostsStatus = 'loading';
+      state.error = null;
+    },
+    [getUserPosts.fulfilled]: (state, action) => {
+      state.userPosts = action.payload;
+      state.userPostsStatus = 'fulfilled';
+      state.error = null;
     },
     [getHomePosts.pending]: state => {
       state.homeStatus = 'loading';
