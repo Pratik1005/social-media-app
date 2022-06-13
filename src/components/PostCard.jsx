@@ -1,8 +1,11 @@
 import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
 import { formatDate } from '../utils/utils';
 import { NavLink } from 'react-router-dom';
+import { PostOption } from './index';
+import { useSelector } from 'react-redux';
 
 const PostCard = ({ postData }) => {
+  const { currentUser } = useSelector(state => state.user);
   const {
     uid,
     name,
@@ -23,27 +26,30 @@ const PostCard = ({ postData }) => {
       align="flex-start"
       width="full"
     >
-      <HStack>
-        <Box as={NavLink} to={`/user/${uid}`}>
-          <Avatar name={name} src={photoURL} />
-        </Box>
-        <Flex justify="center" align="flex-start" flexDirection="column">
-          <Text as="span" fontWeight="500">
-            {name}
-          </Text>
-          <HStack>
-            <Text as="span" color="gray.600" marginTop={0}>
-              {`@${username}`}
-            </Text>
+      <Flex justifyContent="space-between" width="full">
+        <HStack>
+          <Box as={NavLink} to={`/user/${uid}`}>
+            <Avatar name={name} src={photoURL} />
+          </Box>
+          <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              ·
+              {name}
             </Text>
-            <Text as="span" fontSize="14px">
-              {formattedDate}
-            </Text>
-          </HStack>
-        </Flex>
-      </HStack>
+            <HStack>
+              <Text as="span" color="gray.600" marginTop={0}>
+                {`@${username}`}
+              </Text>
+              <Text as="span" fontWeight="500">
+                ·
+              </Text>
+              <Text as="span" fontSize="14px">
+                {formattedDate}
+              </Text>
+            </HStack>
+          </Flex>
+        </HStack>
+        {currentUser.uid === uid && <PostOption />}
+      </Flex>
       <Text>{postText}</Text>
       <HStack justify="space-between" width="full">
         <HStack cursor="pointer">

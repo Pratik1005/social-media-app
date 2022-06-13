@@ -10,3 +10,4 @@ export { ProfileCard } from './ProfileCard';
 export { AddPost } from './AddPost';
 export { ProfileCta } from './ProfileCta';
 export { UsersList } from './UsersList';
+export { PostOption } from './PostOption';
