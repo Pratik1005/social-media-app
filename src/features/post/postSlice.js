@@ -54,7 +54,7 @@ export const addPost = createAsyncThunk(
 );
 
 export const getUserPosts = createAsyncThunk(
-  'post/getUserPost',
+  'post/getUserPosts',
   async (uid, thunkAPI) => {
     try {
       const docRef = doc(db, 'posts', uid);
@@ -89,6 +89,27 @@ export const editPost = createAsyncThunk(
       }
     } catch (err) {
       thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  'post/deletePost',
+  async ({ uid, id, currentLocation }, thunkAPI) => {
+    try {
+      const docRef = doc(db, 'posts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userAllPosts = docSnap.data().posts;
+        const updatedPosts = userAllPosts.filter(post => post.id !== id);
+        await updateDoc(docRef, {
+          posts: updatedPosts,
+        });
+        console.log('updated posts', updatedPosts);
+        return { uid, id, currentLocation, updatedPosts };
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
@@ -165,7 +186,6 @@ export const postSlice = createSlice({
           return post;
         });
         state.homePosts = updatedHomePosts;
-        state.error = null;
       }
       if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
         const updatedUserPosts = state.userPosts.map(post => {
@@ -175,11 +195,26 @@ export const postSlice = createSlice({
           return post;
         });
         state.userPosts = updatedUserPosts;
-        state.error = null;
       }
       toast.success('Edited post successfully');
+      state.error = null;
     },
     [editPost.rejected]: (state, action) => {
+      state.error = action.payload;
+    },
+    [deletePost.fulfilled]: (state, action) => {
+      if (action.payload.currentLocation === '/') {
+        state.homePosts = state.homePosts.filter(
+          post => post.id !== action.payload.id
+        );
+      }
+      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
+        state.userPosts = action.payload.updatedPosts;
+      }
+      toast.success('Deleted post successfully');
+      state.error = null;
+    },
+    [deletePost.rejected]: (state, action) => {
       state.error = action.payload;
     },
     [getUserPosts.loading]: state => {
