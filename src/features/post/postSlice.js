@@ -6,6 +6,7 @@ import {
   getDocs,
   collection,
   getDoc,
+  arrayRemove,
 } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
@@ -17,6 +18,7 @@ const initialState = {
   explorePosts: [],
   userPosts: [],
   bookmarks: [],
+  likedPosts: [],
   newPost: {},
   homeStatus: 'idle',
   exploreStatus: 'idle',
@@ -109,6 +111,74 @@ export const deletePost = createAsyncThunk(
         return { uid, id, currentLocation, updatedPosts };
       }
     } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getLikedPosts = createAsyncThunk(
+  'post/getLikedPosts',
+  async uid => {
+    try {
+      const docRef = doc(db, 'likedPosts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().likedPosts;
+      }
+    } catch (err) {
+      console.error('get liked posts', err);
+    }
+  }
+);
+
+export const likePost = createAsyncThunk(
+  'post/likePost',
+  async ({ uid, id, postUserUid, currentLocation }, thunkAPI) => {
+    try {
+      const likedPostsRef = doc(db, 'likedPosts', uid);
+      await updateDoc(likedPostsRef, {
+        likedPosts: arrayUnion(id),
+      });
+      const postsRef = doc(db, 'posts', postUserUid);
+      const docSnap = await getDoc(postsRef);
+      if (docSnap.exists()) {
+        const userAllPosts = docSnap.data().posts;
+        const updatedPosts = userAllPosts.map(post =>
+          post.id === id ? { ...post, likes: post.likes + 1 } : post
+        );
+        await updateDoc(postsRef, {
+          posts: updatedPosts,
+        });
+        return { uid, id, currentLocation };
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const unlikePost = createAsyncThunk(
+  'post/unlikePost',
+  async ({ uid, id, postUserUid, currentLocation }, thunkAPI) => {
+    try {
+      const likedPostsRef = doc(db, 'likedPosts', uid);
+      await updateDoc(likedPostsRef, {
+        likedPosts: arrayRemove(id),
+      });
+      const postsRef = doc(db, 'posts', postUserUid);
+      const docSnap = await getDoc(postsRef);
+      if (docSnap.exists()) {
+        const userAllPosts = docSnap.data().posts;
+        const updatedPosts = userAllPosts.map(post =>
+          post.id === id ? { ...post, likes: post.likes - 1 } : post
+        );
+        await updateDoc(postsRef, {
+          posts: updatedPosts,
+        });
+        return { id, currentLocation };
+      }
+    } catch (err) {
+      console.error(err);
       return thunkAPI.rejectWithValue(err.message);
     }
   }
@@ -216,6 +286,68 @@ export const postSlice = createSlice({
     },
     [deletePost.rejected]: (state, action) => {
       state.error = action.payload;
+    },
+    [likePost.fulfilled]: (state, action) => {
+      state.likedPosts.push(action.payload.id);
+      if (action.payload.currentLocation === '/') {
+        state.homePosts = state.homePosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes + 1 }
+            : post
+        );
+      }
+      if (action.payload.currentLocation === '/explore') {
+        state.explorePosts = state.explorePosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes + 1 }
+            : post
+        );
+      }
+      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
+        state.userPosts = state.userPosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes + 1 }
+            : post
+        );
+      }
+      state.error = null;
+    },
+    [likePost.rejected]: (state, action) => {
+      state.error = action.payload;
+    },
+    [unlikePost.fulfilled]: (state, action) => {
+      state.likedPosts = state.likedPosts.filter(
+        postId => postId !== action.payload.id
+      );
+      if (action.payload.currentLocation === '/') {
+        state.homePosts = state.homePosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes - 1 }
+            : post
+        );
+      }
+      if (action.payload.currentLocation === '/explore') {
+        state.explorePosts = state.explorePosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes - 1 }
+            : post
+        );
+      }
+      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
+        state.userPosts = state.userPosts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes - 1 }
+            : post
+        );
+      }
+      state.error = null;
+    },
+    [unlikePost.rejected]: (state, action) => {
+      state.error = action.payload;
+    },
+    [getLikedPosts.fulfilled]: (state, action) => {
+      state.likedPosts = action.payload;
+      state.error = null;
     },
     [getUserPosts.loading]: state => {
       state.userPostsStatus = 'loading';

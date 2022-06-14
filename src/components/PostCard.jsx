@@ -1,13 +1,18 @@
 import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
-import { formatDate } from '../utils/utils';
-import { NavLink } from 'react-router-dom';
+import { formatDate, isPostLiked } from '../utils/utils';
+import { NavLink, useLocation } from 'react-router-dom';
 import { PostOption } from './index';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { likePost, unlikePost } from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
+  const { likedPosts } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+  const location = useLocation();
   const {
     uid,
+    id,
     name,
     username,
     photoURL,
@@ -17,6 +22,47 @@ const PostCard = ({ postData }) => {
     uploadDate,
   } = postData;
   const formattedDate = formatDate(uploadDate);
+
+  const handleLikePost = () => {
+    isPostLiked(id, likedPosts)
+      ? dispatch(
+          unlikePost({
+            uid: currentUser.uid,
+            id,
+            postUserUid: uid,
+            currentLocation: location.pathname,
+          })
+        )
+      : dispatch(
+          likePost({
+            uid: currentUser.uid,
+            id,
+            postUserUid: uid,
+            currentLocation: location.pathname,
+          })
+        );
+  };
+
+  const LikeIcon = () => {
+    return (
+      <Box as="span" className="material-icons" color="red.700" fontSize="18px">
+        favorite
+      </Box>
+    );
+  };
+
+  const UnlikeIcon = () => {
+    return (
+      <Box
+        as="span"
+        className="material-icons-outlined"
+        color="gray.600"
+        fontSize="18px"
+      >
+        favorite_border
+      </Box>
+    );
+  };
   return (
     <VStack
       spacing={4}
@@ -75,15 +121,8 @@ const PostCard = ({ postData }) => {
         >
           share
         </Box>
-        <HStack cursor="pointer">
-          <Box
-            as="span"
-            className="material-icons-outlined"
-            color="gray.600"
-            fontSize="18px"
-          >
-            favorite_border
-          </Box>
+        <HStack cursor="pointer" onClick={handleLikePost}>
+          {isPostLiked(id, likedPosts) ? <LikeIcon /> : <UnlikeIcon />}
           <Box as="span" fontSize="14px">
             {likes}
           </Box>
