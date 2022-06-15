@@ -96,7 +96,9 @@ const PostCard = ({ postData }) => {
         </HStack>
         {currentUser.uid === uid && <PostOption postData={postData} />}
       </Flex>
-      <Text>{postText}</Text>
+      <Text as={NavLink} to={`/post/${uid}/${id}`} width="full">
+        {postText}
+      </Text>
       <HStack justify="space-between" width="full">
         <HStack cursor="pointer">
           <Box

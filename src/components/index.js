@@ -12,3 +12,4 @@ export { ProfileCta } from './ProfileCta';
 export { UsersList } from './UsersList';
 export { PostOption } from './PostOption';
 export { EditPost } from './EditPost';
+export { Comment } from './Comment';

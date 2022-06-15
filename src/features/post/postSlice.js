@@ -20,11 +20,13 @@ const initialState = {
   bookmarks: [],
   likedPosts: [],
   newPost: {},
+  singlePost: {},
   homeStatus: 'idle',
   exploreStatus: 'idle',
   userPostsStatus: 'idle',
   bookmarkStatus: 'idle',
   postStatus: 'idle',
+  singlePostStatus: 'idle',
   error: null,
 };
 
@@ -184,6 +186,46 @@ export const unlikePost = createAsyncThunk(
   }
 );
 
+export const getSinglePost = createAsyncThunk(
+  'post/getSinglePost',
+  async ({ uid, postId }) => {
+    try {
+      const docRef = doc(db, 'posts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        console.log(docSnap.data().posts.filter(post => post.id === postId));
+        return docSnap.data().posts.filter(post => post.id === postId)[0];
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  'post/addComment',
+  async ({ uid, id, userComment }) => {
+    try {
+      const docRef = doc(db, 'posts', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const updatedPosts = docSnap
+          .data()
+          .posts.map(post =>
+            post.id === id
+              ? { ...post, comments: [...post.comments, userComment] }
+              : post
+          );
+        await updateDoc(docRef, {
+          posts: updatedPosts,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+);
+
 const getAllPost = async (_, thunkAPI) => {
   try {
     const querySnapshot = await getDocs(collection(db, 'posts'));
@@ -232,7 +274,11 @@ export const getExplorePosts = createAsyncThunk(
 export const postSlice = createSlice({
   name: 'post',
   initialState,
-  reducers: {},
+  reducers: {
+    addCommentToState: (state, action) => {
+      state.singlePost.comments.push(action.payload);
+    },
+  },
   extraReducers: {
     [addPost.pending]: state => {
       state.postStatus = 'loading';
@@ -349,6 +395,13 @@ export const postSlice = createSlice({
       state.likedPosts = action.payload;
       state.error = null;
     },
+    [getSinglePost.pending]: state => {
+      state.singlePostStatus = 'loading';
+    },
+    [getSinglePost.fulfilled]: (state, action) => {
+      state.singlePost = action.payload;
+      state.singlePostStatus = 'fulfilled';
+    },
     [getUserPosts.loading]: state => {
       state.userPostsStatus = 'loading';
       state.error = null;
@@ -385,4 +438,5 @@ export const postSlice = createSlice({
   },
 });
 
+export const { addCommentToState } = postSlice.actions;
 export default postSlice.reducer;
