@@ -17,9 +17,7 @@ const SinglePost = () => {
   const { singlePost, singlePostStatus } = useSelector(state => state.post);
 
   useEffect(() => {
-    if (singlePostStatus === 'idle') {
-      dispatch(getSinglePost({ uid: params.uid, postId: params.postId }));
-    }
+    dispatch(getSinglePost({ uid: params.uid, postId: params.postId }));
   }, [dispatch, params.uid, params.postId]);
   return (
     <Container maxWidth="container.xl" padding={0}>

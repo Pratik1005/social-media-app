@@ -20,7 +20,7 @@ const sortPosts = (posts, sortBy) => {
 };
 
 const isPostLiked = (id, likedPosts) => {
-  return likedPosts.some(postId => postId === id);
+  return likedPosts?.some(postId => postId === id);
 };
 
 export { formatDate, sortPosts, isPostLiked };

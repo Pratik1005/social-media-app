@@ -13,3 +13,5 @@ export { UsersList } from './UsersList';
 export { PostOption } from './PostOption';
 export { EditPost } from './EditPost';
 export { Comment } from './Comment';
+export { EditComment } from './EditComment';
+export { CommentOption } from './CommentOption';

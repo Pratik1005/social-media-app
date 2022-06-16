@@ -193,7 +193,6 @@ export const getSinglePost = createAsyncThunk(
       const docRef = doc(db, 'posts', uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log(docSnap.data().posts.filter(post => post.id === postId));
         return docSnap.data().posts.filter(post => post.id === postId)[0];
       }
     } catch (err) {

@@ -13,6 +13,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
 import { addComment, addCommentToState } from '../features/post/postSlice';
+import { CommentOption } from './index';
 
 const Comment = ({ postData }) => {
   const { comments } = postData;
@@ -36,7 +37,7 @@ const Comment = ({ postData }) => {
   const UserComment = ({ commentData }) => {
     const { uid, name, username, photoURL, commentText } = commentData;
     return (
-      <VStack>
+      <VStack width="full" align="flex-start">
         <Flex justifyContent="space-between" width="full">
           <HStack>
             <Box as={NavLink} to={`/user/${uid}`}>
@@ -53,9 +54,11 @@ const Comment = ({ postData }) => {
               </HStack>
             </Flex>
           </HStack>
-          {/* {currentUser.uid === uid && <PostOption postData={postData} />} */}
+          {currentUser.uid === uid && (
+            <CommentOption commentData={commentData} />
+          )}
         </Flex>
-        <Text>{commentText}</Text>
+        <Text paddingLeft={16}>{commentText}</Text>
       </VStack>
     );
   };
@@ -68,7 +71,7 @@ const Comment = ({ postData }) => {
       align="flex-start"
       width="full"
     >
-      <HStack width="full">
+      <HStack width="full" paddingY={4}>
         <Box as={NavLink} to={`/user/${currentUser.uid}`}>
           <Avatar name={currentUser.name} src={currentUser.photoURL} />
         </Box>
@@ -83,7 +86,7 @@ const Comment = ({ postData }) => {
           backgroundColor="#6D28D9"
           color="#fff"
           _hover={{ backgroundColor: '#6d28d9' }}
-          isDisabled={commentText.length === 0}
+          isDisabled={commentText.trim().length === 0}
           onClick={handleAddComment}
         >
           Reply
