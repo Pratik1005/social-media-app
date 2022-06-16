@@ -3,7 +3,12 @@ import { formatDate, isPostLiked } from '../utils/utils';
 import { NavLink, useLocation } from 'react-router-dom';
 import { PostOption } from './index';
 import { useSelector, useDispatch } from 'react-redux';
-import { likePost, unlikePost } from '../features/post/postSlice';
+import {
+  likePost,
+  unlikePost,
+  likePostToState,
+  unlikePostToState,
+} from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
@@ -24,23 +29,46 @@ const PostCard = ({ postData }) => {
   const formattedDate = formatDate(uploadDate);
 
   const handleLikePost = () => {
-    isPostLiked(id, likedPosts)
-      ? dispatch(
-          unlikePost({
-            uid: currentUser.uid,
-            id,
-            postUserUid: uid,
-            currentLocation: location.pathname,
-          })
-        )
-      : dispatch(
-          likePost({
-            uid: currentUser.uid,
-            id,
-            postUserUid: uid,
-            currentLocation: location.pathname,
-          })
-        );
+    if (isPostLiked(id, likedPosts)) {
+      dispatch(unlikePostToState({ id, currentLocation: location.pathname }));
+      dispatch(
+        unlikePost({
+          uid: currentUser.uid,
+          id,
+          postUserUid: uid,
+        })
+      );
+    } else {
+      dispatch(
+        likePostToState({
+          uid,
+          id,
+          currentLocation: location.pathname,
+        })
+      );
+      dispatch(
+        likePost({
+          uid: currentUser.uid,
+          id,
+          postUserUid: uid,
+        })
+      );
+    }
+    // isPostLiked(id, likedPosts)
+    //   ? dispatch()
+    //     unlikePost({
+    //       uid: currentUser.uid,
+    //       id,
+    //       postUserUid: uid,
+    //       currentLocation: location.pathname,
+    //     })
+    //   : dispatch(
+    //       likePostToState({
+    //         uid,
+    //         id,
+    //         currentLocation: location.pathname,
+    //       })
+    //     );
   };
 
   const LikeIcon = () => {

@@ -109,7 +109,6 @@ export const deletePost = createAsyncThunk(
         await updateDoc(docRef, {
           posts: updatedPosts,
         });
-        console.log('updated posts', updatedPosts);
         return { uid, id, currentLocation, updatedPosts };
       }
     } catch (err) {
@@ -135,7 +134,7 @@ export const getLikedPosts = createAsyncThunk(
 
 export const likePost = createAsyncThunk(
   'post/likePost',
-  async ({ uid, id, postUserUid, currentLocation }, thunkAPI) => {
+  async ({ uid, id, postUserUid }) => {
     try {
       const likedPostsRef = doc(db, 'likedPosts', uid);
       await updateDoc(likedPostsRef, {
@@ -151,17 +150,17 @@ export const likePost = createAsyncThunk(
         await updateDoc(postsRef, {
           posts: updatedPosts,
         });
-        return { uid, id, currentLocation };
       }
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      console.error('like post', err);
+      toast.error(err);
     }
   }
 );
 
 export const unlikePost = createAsyncThunk(
   'post/unlikePost',
-  async ({ uid, id, postUserUid, currentLocation }, thunkAPI) => {
+  async ({ uid, id, postUserUid }) => {
     try {
       const likedPostsRef = doc(db, 'likedPosts', uid);
       await updateDoc(likedPostsRef, {
@@ -177,11 +176,10 @@ export const unlikePost = createAsyncThunk(
         await updateDoc(postsRef, {
           posts: updatedPosts,
         });
-        return { id, currentLocation };
       }
     } catch (err) {
-      console.error(err);
-      return thunkAPI.rejectWithValue(err.message);
+      console.error('unlike post', err);
+      toast.error(err);
     }
   }
 );
@@ -330,6 +328,52 @@ export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    likePostToState: (state, action) => {
+      state.likedPosts.push(action.payload.id);
+      let postsArrayName = '';
+      if (action.payload.currentLocation.includes('post')) {
+        state.singlePost.likes++;
+      } else {
+        if (action.payload.currentLocation === '/') {
+          postsArrayName = 'homePosts';
+        }
+        if (action.payload.currentLocation === '/explore') {
+          postsArrayName = 'explorePosts';
+        }
+        if (action.payload.currentLocation.includes('user')) {
+          postsArrayName = 'userPosts';
+        }
+        state[postsArrayName] = state[postsArrayName].map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes + 1 }
+            : post
+        );
+      }
+    },
+    unlikePostToState: (state, action) => {
+      state.likedPosts = state.likedPosts.filter(
+        postId => postId !== action.payload.id
+      );
+      let postsArrayName = '';
+      if (action.payload.currentLocation.includes('post')) {
+        state.singlePost.likes--;
+      } else {
+        if (action.payload.currentLocation === '/') {
+          postsArrayName = 'homePosts';
+        }
+        if (action.payload.currentLocation === '/explore') {
+          postsArrayName = 'explorePosts';
+        }
+        if (action.payload.currentLocation.includes('user')) {
+          postsArrayName = 'userPosts';
+        }
+        state[postsArrayName] = state[postsArrayName].map(post =>
+          post.id === action.payload.id
+            ? { ...post, likes: post.likes - 1 }
+            : post
+        );
+      }
+    },
     addCommentToState: (state, action) => {
       state.singlePost.comments.push(action.payload);
       toast.success('Added comment successfully');
@@ -403,64 +447,6 @@ export const postSlice = createSlice({
     [deletePost.rejected]: (state, action) => {
       state.error = action.payload;
     },
-    [likePost.fulfilled]: (state, action) => {
-      state.likedPosts.push(action.payload.id);
-      if (action.payload.currentLocation === '/') {
-        state.homePosts = state.homePosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes + 1 }
-            : post
-        );
-      }
-      if (action.payload.currentLocation === '/explore') {
-        state.explorePosts = state.explorePosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes + 1 }
-            : post
-        );
-      }
-      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
-        state.userPosts = state.userPosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes + 1 }
-            : post
-        );
-      }
-      state.error = null;
-    },
-    [likePost.rejected]: (state, action) => {
-      state.error = action.payload;
-    },
-    [unlikePost.fulfilled]: (state, action) => {
-      state.likedPosts = state.likedPosts.filter(
-        postId => postId !== action.payload.id
-      );
-      if (action.payload.currentLocation === '/') {
-        state.homePosts = state.homePosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes - 1 }
-            : post
-        );
-      }
-      if (action.payload.currentLocation === '/explore') {
-        state.explorePosts = state.explorePosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes - 1 }
-            : post
-        );
-      }
-      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
-        state.userPosts = state.userPosts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, likes: post.likes - 1 }
-            : post
-        );
-      }
-      state.error = null;
-    },
-    [unlikePost.rejected]: (state, action) => {
-      state.error = action.payload;
-    },
     [getLikedPosts.fulfilled]: (state, action) => {
       state.likedPosts = action.payload;
       state.error = null;
@@ -508,6 +494,11 @@ export const postSlice = createSlice({
   },
 });
 
-export const { addCommentToState, editCommentToState, deleteCommentToState } =
-  postSlice.actions;
+export const {
+  addCommentToState,
+  editCommentToState,
+  deleteCommentToState,
+  likePostToState,
+  unlikePostToState,
+} = postSlice.actions;
 export default postSlice.reducer;
