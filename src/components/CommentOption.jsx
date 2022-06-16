@@ -1,14 +1,19 @@
 import { Menu, MenuButton, MenuList, MenuItem, Box } from '@chakra-ui/react';
 import { EditComment } from './index';
 import { useDispatch } from 'react-redux';
-import { deletePost } from '../features/post/postSlice';
+import {
+  deleteComment,
+  deleteCommentToState,
+} from '../features/post/postSlice';
 
-const CommentOption = ({ commentData }) => {
-  const { uid, id } = commentData;
+const CommentOption = ({ commentData, postData }) => {
+  const { id } = commentData;
+  const { uid: userId, id: postId } = postData;
   const dispatch = useDispatch();
 
   const handleDeleteComment = () => {
-    dispatch(deletePost({ uid, id }));
+    dispatch(deleteCommentToState({ id }));
+    dispatch(deleteComment({ userId, postId, id }));
   };
   return (
     <Menu>
@@ -18,7 +23,7 @@ const CommentOption = ({ commentData }) => {
         </Box>
       </MenuButton>
       <MenuList minWidth={140}>
-        <EditComment commentData={commentData} />
+        <EditComment commentData={commentData} postData={postData} />
         <MenuItem color="red.600" onClick={handleDeleteComment}>
           Delete
         </MenuItem>

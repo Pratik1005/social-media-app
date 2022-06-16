@@ -32,6 +32,7 @@ const Comment = ({ postData }) => {
     };
     dispatch(addCommentToState(userComment));
     dispatch(addComment({ uid: postData.uid, id: postData.id, userComment }));
+    setCommentText('');
   };
 
   const UserComment = ({ commentData }) => {
@@ -55,7 +56,7 @@ const Comment = ({ postData }) => {
             </Flex>
           </HStack>
           {currentUser.uid === uid && (
-            <CommentOption commentData={commentData} />
+            <CommentOption commentData={commentData} postData={postData} />
           )}
         </Flex>
         <Text paddingLeft={16}>{commentText}</Text>

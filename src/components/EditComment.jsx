@@ -13,15 +13,18 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { editComment, editCommentToState } from '../features/post/postSlice';
 
-const EditComment = ({ commentData }) => {
-  const { uid, id, commentText } = commentData;
+const EditComment = ({ commentData, postData }) => {
+  const { id, commentText } = commentData;
+  const { uid: userId, id: postId } = postData;
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [commentNewText, setCommentNewText] = useState(commentText);
 
   const handleSaveComment = () => {
-    // dispatch(editComment({ uid, id, commentNewText }));
+    dispatch(editCommentToState({ id, commentNewText }));
+    dispatch(editComment({ userId, postId, id, commentNewText }));
     onClose();
   };
 

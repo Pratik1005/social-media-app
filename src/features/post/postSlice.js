@@ -225,6 +225,62 @@ export const addComment = createAsyncThunk(
   }
 );
 
+export const editComment = createAsyncThunk(
+  'post/editComment',
+  async ({ userId, postId, id, commentNewText }) => {
+    try {
+      const docRef = doc(db, 'posts', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const updatedPosts = docSnap.data().posts.map(post =>
+          post.id === postId
+            ? {
+                ...post,
+                comments: post.comments.map(comment =>
+                  comment.id === id
+                    ? { ...comment, commentText: commentNewText }
+                    : comment
+                ),
+              }
+            : post
+        );
+        await updateDoc(docRef, {
+          posts: updatedPosts,
+        });
+      }
+    } catch (err) {
+      console.error('edit comment', err);
+      toast.error(err);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  'post/deleteComment',
+  async ({ userId, postId, id }) => {
+    try {
+      const docRef = doc(db, 'posts', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const updatedPosts = docSnap.data().posts.map(post =>
+          post.id === postId
+            ? {
+                ...post,
+                comments: post.comments.filter(comment => comment.id !== id),
+              }
+            : post
+        );
+        await updateDoc(docRef, {
+          posts: updatedPosts,
+        });
+      }
+    } catch (err) {
+      console.error('delete comment', err);
+      toast.error('err');
+    }
+  }
+);
+
 const getAllPost = async (_, thunkAPI) => {
   try {
     const querySnapshot = await getDocs(collection(db, 'posts'));
@@ -276,6 +332,21 @@ export const postSlice = createSlice({
   reducers: {
     addCommentToState: (state, action) => {
       state.singlePost.comments.push(action.payload);
+      toast.success('Added comment successfully');
+    },
+    editCommentToState: (state, action) => {
+      state.singlePost.comments = state.singlePost.comments.map(comment =>
+        comment.id === action.payload.id
+          ? { ...comment, commentText: action.payload.commentNewText }
+          : comment
+      );
+      toast.success('Edited comment successfully');
+    },
+    deleteCommentToState: (state, action) => {
+      state.singlePost.comments = state.singlePost.comments.filter(
+        comment => comment.id !== action.payload.id
+      );
+      toast.success('Deleted comment successfully');
     },
   },
   extraReducers: {
@@ -437,5 +508,6 @@ export const postSlice = createSlice({
   },
 });
 
-export const { addCommentToState } = postSlice.actions;
+export const { addCommentToState, editCommentToState, deleteCommentToState } =
+  postSlice.actions;
 export default postSlice.reducer;
