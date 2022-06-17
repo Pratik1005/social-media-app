@@ -54,21 +54,6 @@ const PostCard = ({ postData }) => {
         })
       );
     }
-    // isPostLiked(id, likedPosts)
-    //   ? dispatch()
-    //     unlikePost({
-    //       uid: currentUser.uid,
-    //       id,
-    //       postUserUid: uid,
-    //       currentLocation: location.pathname,
-    //     })
-    //   : dispatch(
-    //       likePostToState({
-    //         uid,
-    //         id,
-    //         currentLocation: location.pathname,
-    //       })
-    //     );
   };
 
   const LikeIcon = () => {
@@ -128,7 +113,7 @@ const PostCard = ({ postData }) => {
         {postText}
       </Text>
       <HStack justify="space-between" width="full">
-        <HStack cursor="pointer">
+        <HStack as={NavLink} to={`/post/${uid}/${id}`}>
           <Box
             as="span"
             className="material-icons-outlined"

@@ -64,7 +64,7 @@ const EditPost = ({ postData }) => {
               color="#fff"
               variant="solid"
               _hover={{ backgroundColor: '#6d28d9' }}
-              isDisabled={postNewText.length === 0}
+              isDisabled={postNewText.trim().length === 0}
               onClick={handleSavePost}
             >
               Save
