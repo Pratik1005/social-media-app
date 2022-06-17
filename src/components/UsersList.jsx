@@ -5,7 +5,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Button,
   useDisclosure,
   Avatar,
   Text,
