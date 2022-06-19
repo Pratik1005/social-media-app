@@ -41,7 +41,6 @@ const PostCard = ({ postData }) => {
     } else {
       dispatch(
         likePostToState({
-          uid,
           id,
           currentLocation: location.pathname,
         })

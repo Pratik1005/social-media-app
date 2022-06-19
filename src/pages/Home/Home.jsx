@@ -16,6 +16,7 @@ import { getHomePosts } from '../../features/post/postSlice';
 const Home = () => {
   const { currentUser } = useSelector(state => state.user);
   const { homePosts, homeStatus, error } = useSelector(state => state.post);
+  const { userData } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {

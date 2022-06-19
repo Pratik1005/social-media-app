@@ -121,7 +121,8 @@ export const getLikedPosts = createAsyncThunk(
   'post/getLikedPosts',
   async uid => {
     try {
-      const docRef = doc(db, 'likedPosts', uid);
+      console.log(uid);
+      const docRef = doc(collection(db, 'likedPosts'), uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         return docSnap.data().likedPosts;
