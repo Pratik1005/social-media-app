@@ -65,7 +65,7 @@ const AddPost = () => {
               backgroundColor="#6D28D9"
               color="#fff"
               _hover={{ backgroundColor: '#6d28d9' }}
-              isDisabled={postText.length === 0}
+              isDisabled={postText.trim().length === 0}
               onClick={handleAddPost}
             >
               Post

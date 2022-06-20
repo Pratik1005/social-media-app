@@ -14,7 +14,9 @@ import { getExplorePosts } from '../../features/post/postSlice';
 
 const Explore = () => {
   const dispatch = useDispatch();
-  const { explorePosts, exploreStatus } = useSelector(state => state.post);
+  const { explorePosts, exploreStatus, error } = useSelector(
+    state => state.post
+  );
   const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ const Explore = () => {
             <Heading fontSize="25px" paddingBottom={2}>
               Explore
             </Heading>
+            {error && <Text>{error}</Text>}
             {exploreStatus === 'fulfilled' ? (
               <>
                 {explorePosts.length > 0 ? (

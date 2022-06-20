@@ -9,7 +9,7 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { defaultHeader } from '../asset';
-import { ProfileCta } from './index';
+import { ProfileCta, UsersList } from './index';
 
 const ProfileCard = ({ userData }) => {
   const {
@@ -65,16 +65,10 @@ const ProfileCard = ({ userData }) => {
         )}
         <HStack>
           <HStack paddingRight={4}>
-            <Box as="span" fontWeight="500">
-              {following.length}
-            </Box>
-            <Text>Following</Text>
+            <UsersList title="Following" users={following} />
           </HStack>
           <HStack>
-            <Box as="span" fontWeight="500">
-              {followers.length}
-            </Box>
-            <Text>Followers</Text>
+            <UsersList title="Followers" users={followers} />
           </HStack>
         </HStack>
       </VStack>

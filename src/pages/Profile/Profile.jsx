@@ -18,14 +18,17 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserProfile } from '../../features/user/userSlice';
+import { getUserPosts } from '../../features/post/postSlice';
 
 const Profile = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const { userProfile, status } = useSelector(state => state.user);
+  const { userProfile, status, error } = useSelector(state => state.user);
+  const { userPosts, userPostsStatus } = useSelector(state => state.post);
 
   useEffect(() => {
     dispatch(getUserProfile(params.uid));
+    dispatch(getUserPosts(params.uid));
   }, [params.uid, dispatch]);
   return (
     <Container maxWidth="container.xl" padding={0}>
@@ -35,12 +38,14 @@ const Profile = () => {
           <NavMenu />
         </GridItem>
         <GridItem>
+          {error && <Text>{error}</Text>}
           {status === 'fulfilled' ? (
             <>
               <ProfileCard userData={userProfile.userData} />
               <VStack>
-                {userProfile.userPosts.length > 0 ? (
-                  userProfile.userPosts.map(post => (
+                {userPostsStatus === 'loading' && <Spinner size="xl" />}
+                {userPosts.length > 0 ? (
+                  userPosts.map(post => (
                     <PostCard key={post.id} postData={post} />
                   ))
                 ) : (

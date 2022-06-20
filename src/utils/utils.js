@@ -19,4 +19,8 @@ const sortPosts = (posts, sortBy) => {
   }
 };
 
-export { formatDate, sortPosts };
+const isPostLiked = (id, likedPosts) => {
+  return likedPosts?.some(postId => postId === id);
+};
+
+export { formatDate, sortPosts, isPostLiked };
