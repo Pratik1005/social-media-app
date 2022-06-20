@@ -15,6 +15,7 @@ import {
   FormLabel,
   Input,
   Avatar,
+  Flex,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { defaultHeader } from '../asset';
@@ -50,12 +51,46 @@ const EditProfile = ({ userData }) => {
           <ModalHeader>EditProfile</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Box>
+            <Box position="relative">
               <Image
                 src={headerImage}
                 fallbackSrc={defaultHeader}
                 borderRadius="md"
               />
+              <Flex
+                position="absolute"
+                top="50%"
+                left="50%"
+                transform="translate(-50%, -50%)"
+                alignItems="center"
+              >
+                <FormLabel margin={0}>
+                  <Box
+                    as="span"
+                    className="material-icons-outlined"
+                    color="#fff"
+                    backgroundColor="rgba(0,0,0,0.5)"
+                    borderRadius="full"
+                    padding={2}
+                    marginRight={4}
+                    cursor="pointer"
+                  >
+                    camera_enhance
+                  </Box>
+                  <Input type="file" display="none" />
+                </FormLabel>
+                <Box
+                  as="span"
+                  className="material-icons"
+                  color="#fff"
+                  backgroundColor="rgba(0,0,0,0.5)"
+                  borderRadius="full"
+                  padding={2}
+                  cursor="pointer"
+                >
+                  close
+                </Box>
+              </Flex>
             </Box>
             <VStack width="full" alignItems="flex-start" padding={4}>
               <Box width="120px" height="120px" marginTop="-60px">
