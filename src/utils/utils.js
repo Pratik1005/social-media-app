@@ -23,4 +23,8 @@ const isPostLiked = (id, likedPosts) => {
   return likedPosts?.some(postId => postId === id);
 };
 
-export { formatDate, sortPosts, isPostLiked };
+const isPostBookmarked = (id, bookmarks) => {
+  return bookmarks?.some(bookmark => bookmark?.id === id);
+};
+
+export { formatDate, sortPosts, isPostLiked, isPostBookmarked };

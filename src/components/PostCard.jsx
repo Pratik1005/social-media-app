@@ -1,5 +1,5 @@
 import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
-import { formatDate, isPostLiked } from '../utils/utils';
+import { formatDate, isPostLiked, isPostBookmarked } from '../utils/utils';
 import { NavLink, useLocation } from 'react-router-dom';
 import { PostOption } from './index';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,11 +8,15 @@ import {
   unlikePost,
   likePostToState,
   unlikePostToState,
+  bookmarkPost,
+  bookmarkToState,
+  unbookmarkPost,
+  unbookmarkFromState,
 } from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
-  const { likedPosts } = useSelector(state => state.post);
+  const { likedPosts, bookmarks } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const location = useLocation();
   const {
@@ -52,6 +56,16 @@ const PostCard = ({ postData }) => {
           postUserUid: uid,
         })
       );
+    }
+  };
+
+  const handleBookmark = () => {
+    if (isPostBookmarked(id, bookmarks)) {
+      dispatch(unbookmarkFromState(id));
+      dispatch(unbookmarkPost({ userId: currentUser.uid, id }));
+    } else {
+      dispatch(bookmarkToState(postData));
+      dispatch(bookmarkPost({ userId: currentUser.uid, postData }));
     }
   };
 
@@ -147,8 +161,9 @@ const PostCard = ({ postData }) => {
           color="gray.600"
           fontSize="18px"
           cursor="pointer"
+          onClick={handleBookmark}
         >
-          bookmark_border
+          {isPostBookmarked(id, bookmarks) ? 'bookmark' : 'bookmark_border'}
         </Box>
       </HStack>
     </VStack>

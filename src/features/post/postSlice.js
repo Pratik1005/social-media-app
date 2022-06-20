@@ -184,6 +184,56 @@ export const unlikePost = createAsyncThunk(
   }
 );
 
+export const getBookmarks = createAsyncThunk('post/getBookmarks', async uid => {
+  try {
+    const docRef = doc(db, 'bookmarks', uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().bookmarks;
+    }
+  } catch (err) {
+    console.error('get bookmarks', err);
+  }
+});
+
+export const bookmarkPost = createAsyncThunk(
+  'post/bookmarkPost',
+  async ({ userId, postData }) => {
+    try {
+      const docRef = doc(db, 'bookmarks', userId);
+      await updateDoc(docRef, {
+        bookmarks: arrayUnion(postData),
+      });
+      toast.success('Added to bookmarks');
+    } catch (err) {
+      console.error('bookmark post', err);
+      toast.error(err);
+    }
+  }
+);
+
+export const unbookmarkPost = createAsyncThunk(
+  'post/unbookmarkPost',
+  async ({ userId, id }) => {
+    try {
+      const docRef = doc(db, 'bookmarks', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const updatedBookmarks = docSnap
+          .data()
+          .bookmarks.filter(bookmark => bookmark.id !== id);
+        await updateDoc(docRef, {
+          bookmarks: updatedBookmarks,
+        });
+        toast.success('Removed from bookmarks');
+      }
+    } catch (err) {
+      console.error('unbookmark post', err);
+      toast.error(err);
+    }
+  }
+);
+
 export const getSinglePost = createAsyncThunk(
   'post/getSinglePost',
   async ({ uid, postId }) => {
@@ -374,6 +424,14 @@ export const postSlice = createSlice({
         );
       }
     },
+    bookmarkToState: (state, action) => {
+      state.bookmarks.push(action.payload);
+    },
+    unbookmarkFromState: (state, action) => {
+      state.bookmarks = state.bookmarks.filter(
+        bookmark => bookmark.id !== action.payload
+      );
+    },
     addCommentToState: (state, action) => {
       state.singlePost.comments.push(action.payload);
       toast.success('Added comment successfully');
@@ -451,6 +509,15 @@ export const postSlice = createSlice({
       state.likedPosts = action.payload;
       state.error = null;
     },
+    [getBookmarks.pending]: state => {
+      state.bookmarkStatus = 'loading';
+      state.error = null;
+    },
+    [getBookmarks.fulfilled]: (state, action) => {
+      state.bookmarks = action.payload;
+      state.bookmarkStatus = 'fulfilled';
+      state.error = null;
+    },
     [getSinglePost.pending]: state => {
       state.singlePostStatus = 'loading';
     },
@@ -500,5 +567,7 @@ export const {
   deleteCommentToState,
   likePostToState,
   unlikePostToState,
+  bookmarkToState,
+  unbookmarkFromState,
 } = postSlice.actions;
 export default postSlice.reducer;
