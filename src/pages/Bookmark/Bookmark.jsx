@@ -16,7 +16,6 @@ const Bookmark = () => {
   const { bookmarks, bookmarkStatus } = useSelector(state => state.post);
   const { currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
-  console.log(bookmarks);
 
   useEffect(() => {
     dispatch(getBookmarks(currentUser.uid));

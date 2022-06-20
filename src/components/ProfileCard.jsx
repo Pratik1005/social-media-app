@@ -41,7 +41,10 @@ const ProfileCard = ({ userData }) => {
             <Avatar src={photoURL} name={name} size="2xl" />
           </Box>
           <Box>
-            <ProfileCta followUserData={{ uid, name, username, photoURL }} />
+            <ProfileCta
+              followUserData={{ uid, name, username, photoURL }}
+              userData={userData}
+            />
           </Box>
         </HStack>
         <Flex justify="center" align="flex-start" flexDirection="column">
