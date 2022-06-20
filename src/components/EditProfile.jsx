@@ -93,8 +93,35 @@ const EditProfile = ({ userData }) => {
               </Flex>
             </Box>
             <VStack width="full" alignItems="flex-start" padding={4}>
-              <Box width="120px" height="120px" marginTop="-60px">
+              <Box
+                width="120px"
+                height="120px"
+                marginTop="-60px"
+                position="relative"
+              >
                 <Avatar src={photoURL} name={name} size="xl" />
+                <Box
+                  position="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                >
+                  <FormLabel>
+                    <Box
+                      as="span"
+                      className="material-icons-outlined"
+                      color="#fff"
+                      backgroundColor="rgba(0,0,0,0.5)"
+                      borderRadius="full"
+                      padding={2}
+                      marginRight={4}
+                      cursor="pointer"
+                    >
+                      camera_enhance
+                    </Box>
+                    <Input type="file" display="none" />
+                  </FormLabel>
+                </Box>
               </Box>
               <FormControl isRequired>
                 <FormLabel>Name</FormLabel>
