@@ -18,22 +18,61 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { defaultHeader } from '../asset';
+import { useDispatch } from 'react-redux';
+import { updateProfile } from '../features/user/userSlice';
 
 const EditProfile = ({ userData }) => {
-  const { name, bio, website, photoURL, headerImage } = userData;
+  const { uid, name, bio, website, photoURL, headerImage } = userData;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
   const [profileData, setProfileData] = useState({
     name: name,
     bio: bio,
     website: website,
+  });
+  const [media, setMedia] = useState({
+    headerImgURL: headerImage,
+    profileImgURL: photoURL,
+    headerImg: '',
+    profileImg: '',
   });
 
   const handleInputChange = e => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
 
-  const handleSaveProfile = () => {};
+  const handleMediaPreview = e => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size < 5000000) {
+        setMedia(prev => ({
+          ...prev,
+          [e.target.name]: URL.createObjectURL(file),
+          [e.target.id]: file,
+        }));
+      } else {
+        toast.error('Image size should not exceed 5MB');
+      }
+    }
+  };
+
+  const handleRemoveHeader = () => {
+    setMedia(prev => ({ ...prev, headerImgURL: '' }));
+  };
+
+  const handleSaveProfile = () => {
+    dispatch(
+      updateProfile({
+        uid,
+        profileData,
+        media,
+        profileCheck: photoURL,
+        headerCheck: headerImage,
+      })
+    );
+  };
   return (
     <>
       <Button variant="outline" marginRight={4} onClick={onOpen}>
@@ -53,9 +92,12 @@ const EditProfile = ({ userData }) => {
           <ModalBody>
             <Box position="relative">
               <Image
-                src={headerImage}
+                src={media.headerImgURL}
                 fallbackSrc={defaultHeader}
                 borderRadius="md"
+                width="full"
+                height="150px"
+                objectFit="cover"
               />
               <Flex
                 position="absolute"
@@ -77,7 +119,14 @@ const EditProfile = ({ userData }) => {
                   >
                     camera_enhance
                   </Box>
-                  <Input type="file" display="none" />
+                  <Input
+                    type="file"
+                    display="none"
+                    name="headerImgURL"
+                    id="headerImg"
+                    accept="image/jpg, image/png, image/jpeg"
+                    onChange={e => handleMediaPreview(e)}
+                  />
                 </FormLabel>
                 <Box
                   as="span"
@@ -87,6 +136,7 @@ const EditProfile = ({ userData }) => {
                   borderRadius="full"
                   padding={2}
                   cursor="pointer"
+                  onClick={handleRemoveHeader}
                 >
                   close
                 </Box>
@@ -99,7 +149,7 @@ const EditProfile = ({ userData }) => {
                 marginTop="-60px"
                 position="relative"
               >
-                <Avatar src={photoURL} name={name} size="xl" />
+                <Avatar src={media.profileImgURL} name={name} size="xl" />
                 <Box
                   position="absolute"
                   top="50%"
@@ -119,7 +169,14 @@ const EditProfile = ({ userData }) => {
                     >
                       camera_enhance
                     </Box>
-                    <Input type="file" display="none" />
+                    <Input
+                      type="file"
+                      display="none"
+                      accept="image/jpg, image/png, image/jpeg"
+                      name="profileImgURL"
+                      id="profileImg"
+                      onChange={e => handleMediaPreview(e)}
+                    />
                   </FormLabel>
                 </Box>
               </Box>

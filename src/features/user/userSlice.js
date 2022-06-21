@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
+import { toast } from 'react-toastify';
 
 const initialState = {
   currentUser: {},
@@ -88,6 +90,54 @@ export const unfollowUser = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  'user/updateProfile',
+  async ({ uid, profileData, media }) => {
+    let headerDownloadURL = media.headerImgURL;
+    let profileDownloadURL = media.profileImgURL;
+    try {
+      // upload header image
+      if (media.headerImg) {
+        const headerRef = ref(storage, `headerImages/${media.headerImg.name}`);
+        const uploadHeaderImg = await uploadBytesResumable(
+          headerRef,
+          media.headerImg
+        );
+        headerDownloadURL = await getDownloadURL(uploadHeaderImg.ref);
+      }
+      // upload profile image
+      if (media.profileImg) {
+        const profileRef = ref(
+          storage,
+          `profileImages/${media.profileImg.name}`
+        );
+        const uploadProfileImg = await uploadBytesResumable(
+          profileRef,
+          media.profileImg
+        );
+        profileDownloadURL = await getDownloadURL(uploadProfileImg.ref);
+      }
+      // update user data
+      const updatedDetails = {
+        name: profileData.name,
+        bio: profileData.bio,
+        website: profileData.website,
+        headerImage: headerDownloadURL,
+        photoURL: profileDownloadURL,
+      };
+      const docRef = doc(db, 'users', uid);
+      await updateDoc(docRef, {
+        ...updatedDetails,
+      });
+      toast.success('Profile updated successfully');
+      return updatedDetails;
+    } catch (err) {
+      console.error(err);
+      toast.error(err);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -98,7 +148,7 @@ const userSlice = createSlice({
   },
   extraReducers: {
     [getUserProfile.pending]: state => {
-      state.status = 'pending';
+      state.status = 'loading';
       state.error = null;
     },
     [getUserProfile.fulfilled]: (state, action) => {
@@ -108,6 +158,17 @@ const userSlice = createSlice({
     },
     [getUserProfile.rejected]: (state, action) => {
       state.error = action.payload;
+    },
+    [updateProfile.pending]: state => {
+      state.status = 'loading';
+      state.error = null;
+    },
+    [updateProfile.fulfilled]: (state, action) => {
+      state.userProfile.userData = {
+        ...state.userProfile.userData,
+        ...action.payload,
+      };
+      state.status = 'fulfilled';
     },
     [followUser.pending]: state => {
       state.followStatus = 'pending';

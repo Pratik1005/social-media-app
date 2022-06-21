@@ -15,7 +15,7 @@ import {
 } from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
-  const { currentUser } = useSelector(state => state.user);
+  const { currentUser, userProfile } = useSelector(state => state.user);
   const { likedPosts, bookmarks } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -101,11 +101,18 @@ const PostCard = ({ postData }) => {
       <Flex justifyContent="space-between" width="full">
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
-            <Avatar name={name} src={photoURL} />
+            <Avatar
+              name={currentUser.uid === uid ? userProfile.userData.name : name}
+              src={
+                currentUser.uid === uid
+                  ? userProfile.userData.photoURL
+                  : photoURL
+              }
+            />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              {name}
+              {currentUser.uid === uid ? userProfile.userData.name : name}
             </Text>
             <HStack>
               <Text as="span" color="gray.600" marginTop={0}>

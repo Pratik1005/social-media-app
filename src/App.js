@@ -29,6 +29,7 @@ function App() {
     if (user) {
       const userObj = await getDoc(doc(db, `users/${user.uid}`));
       const currentData = userObj.data();
+      console.log(currentData, 'currentUser');
       if (currentData) {
         dispatch(setUserData(currentData));
         dispatch(saveCurrentUser(currentData));

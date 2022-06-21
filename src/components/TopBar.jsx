@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const TopBar = () => {
-  const { userData } = useSelector(state => state.auth);
+  const { userProfile } = useSelector(state => state.user);
   return (
     <HStack
       justify="space-between"
@@ -34,11 +34,14 @@ const TopBar = () => {
 
         <Box
           as={NavLink}
-          to={`/user/${userData.uid}`}
+          to={`/user/${userProfile.userData.uid}`}
           paddingRight={8}
           cursor="pointer"
         >
-          <Avatar src={userData.photoURL} name={userData.name} />
+          <Avatar
+            src={userProfile.userData.photoURL}
+            name={userProfile.userData.name}
+          />
         </Box>
       </HStack>
     </HStack>
