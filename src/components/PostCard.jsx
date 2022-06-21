@@ -1,4 +1,12 @@
-import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Flex,
+  Avatar,
+  Image,
+} from '@chakra-ui/react';
 import { formatDate, isPostLiked, isPostBookmarked } from '../utils/utils';
 import { NavLink, useLocation } from 'react-router-dom';
 import { PostOption } from './index';
@@ -15,7 +23,7 @@ import {
 } from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
-  const { currentUser, userProfile } = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.user);
   const { likedPosts, bookmarks } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -26,6 +34,7 @@ const PostCard = ({ postData }) => {
     username,
     photoURL,
     postText,
+    postImage,
     likes,
     comments,
     uploadDate,
@@ -102,17 +111,13 @@ const PostCard = ({ postData }) => {
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
             <Avatar
-              name={currentUser.uid === uid ? userProfile.userData.name : name}
-              src={
-                currentUser.uid === uid
-                  ? userProfile.userData.photoURL
-                  : photoURL
-              }
+              name={currentUser.uid === uid ? currentUser.name : name}
+              src={currentUser.uid === uid ? currentUser.photoURL : photoURL}
             />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              {currentUser.uid === uid ? userProfile.userData.name : name}
+              {currentUser.uid === uid ? currentUser.name : name}
             </Text>
             <HStack>
               <Text as="span" color="gray.600" marginTop={0}>
@@ -132,6 +137,14 @@ const PostCard = ({ postData }) => {
       <Text as={NavLink} to={`/post/${uid}/${id}`} width="full">
         {postText}
       </Text>
+      {postImage && (
+        <Image
+          src={postImage}
+          width="full"
+          height="300px"
+          objectFit="contain"
+        />
+      )}
       <HStack justify="space-between" width="full">
         <HStack as={NavLink} to={`/post/${uid}/${id}`}>
           <Box

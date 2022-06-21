@@ -24,7 +24,9 @@ const Profile = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { userProfile, status, error } = useSelector(state => state.user);
-  const { userPosts, userPostsStatus } = useSelector(state => state.post);
+  const { userPosts, userPostsStatus, postStatus } = useSelector(
+    state => state.post
+  );
 
   useEffect(() => {
     dispatch(getUserProfile(params.uid));
@@ -44,6 +46,7 @@ const Profile = () => {
               <ProfileCard userData={userProfile.userData} />
               <VStack>
                 {userPostsStatus === 'loading' && <Spinner size="xl" />}
+                {postStatus === 'loading' && <Spinner size="xl" />}
                 {userPosts.length > 0 ? (
                   userPosts.map(post => (
                     <PostCard key={post.id} postData={post} />

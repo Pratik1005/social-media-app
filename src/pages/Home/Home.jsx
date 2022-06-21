@@ -15,7 +15,9 @@ import { getHomePosts } from '../../features/post/postSlice';
 
 const Home = () => {
   const { currentUser } = useSelector(state => state.user);
-  const { homePosts, homeStatus, error } = useSelector(state => state.post);
+  const { homePosts, homeStatus, error, postStatus } = useSelector(
+    state => state.post
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -60,6 +62,7 @@ const Home = () => {
               </Button>
             </HStack>
             {error && <Text>{error}</Text>}
+            {postStatus === 'loading' && <Spinner size="xl" />}
             {homeStatus === 'loading' ? (
               <Spinner size="xl" />
             ) : (

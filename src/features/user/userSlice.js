@@ -168,6 +168,11 @@ const userSlice = createSlice({
         ...state.userProfile.userData,
         ...action.payload,
       };
+      state.currentUser = {
+        ...state.currentUser,
+        name: action.payload.name,
+        photoURL: action.payload.photoURL,
+      };
       state.status = 'fulfilled';
     },
     [followUser.pending]: state => {
