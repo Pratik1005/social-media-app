@@ -3,8 +3,10 @@ import { userLogout } from '../features/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { followUser, unfollowUser } from '../features/user/userSlice';
 import { EditProfile } from './index';
+import { useLocation } from 'react-router-dom';
 
 const ProfileCta = ({ followUserData, userData }) => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentUser, userProfile, followStatus } = useSelector(
     state => state.user
@@ -30,7 +32,14 @@ const ProfileCta = ({ followUserData, userData }) => {
             variant="outline"
             isLoading={followStatus === 'pending'}
             onClick={() =>
-              dispatch(followUser({ currentUserData, ...followUserData }))
+              dispatch(
+                followUser({
+                  suggest: false,
+                  currentLocation: location.pathname,
+                  currentUserData,
+                  ...followUserData,
+                })
+              )
             }
           >
             Follow
