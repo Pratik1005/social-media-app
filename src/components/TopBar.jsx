@@ -7,6 +7,7 @@ const TopBar = () => {
   return (
     <HStack
       justify="space-between"
+      marginBottom={2}
       paddingY={2}
       position="sticky"
       top="0"

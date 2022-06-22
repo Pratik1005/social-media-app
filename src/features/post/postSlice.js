@@ -403,6 +403,11 @@ export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    showTrendingPost: state => {
+      state.homePosts = state.homePosts.sort(
+        (post1, post2) => post2.likes - post1.likes
+      );
+    },
     likePostToState: (state, action) => {
       state.likedPosts.push(action.payload.id);
       let postsArrayName = '';
@@ -593,5 +598,6 @@ export const {
   unlikePostToState,
   bookmarkToState,
   unbookmarkFromState,
+  showTrendingPost,
 } = postSlice.actions;
 export default postSlice.reducer;

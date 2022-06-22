@@ -11,7 +11,7 @@ import {
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getHomePosts } from '../../features/post/postSlice';
+import { getHomePosts, showTrendingPost } from '../../features/post/postSlice';
 
 const Home = () => {
   const { currentUser } = useSelector(state => state.user);
@@ -25,6 +25,10 @@ const Home = () => {
       getHomePosts({ uid: currentUser.uid, following: currentUser.following })
     );
   }, [currentUser.following, currentUser.uid, dispatch]);
+
+  const handleTrending = () => {
+    dispatch(showTrendingPost());
+  };
 
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>
@@ -47,6 +51,7 @@ const Home = () => {
                 variant="outline"
                 color="gray.700"
                 border="2px"
+                onClick={handleTrending}
               >
                 Trending
               </Button>
