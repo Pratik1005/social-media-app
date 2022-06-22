@@ -3,15 +3,23 @@ import {
   Grid,
   GridItem,
   VStack,
-  HStack,
+  Flex,
   Button,
   Spinner,
   Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getHomePosts, showTrendingPost } from '../../features/post/postSlice';
+import {
+  getHomePosts,
+  showTrendingPost,
+  sortPost,
+} from '../../features/post/postSlice';
 
 const Home = () => {
   const { currentUser } = useSelector(state => state.user);
@@ -30,6 +38,10 @@ const Home = () => {
     dispatch(showTrendingPost());
   };
 
+  const handleSort = sortBy => {
+    dispatch(sortPost(sortBy));
+  };
+
   const TrendIcon = () => (
     <span className="material-icons">local_fire_department</span>
   );
@@ -43,7 +55,7 @@ const Home = () => {
         </GridItem>
         <GridItem>
           <VStack>
-            <HStack width="full">
+            <Flex width="full">
               <Button
                 leftIcon={<TrendIcon />}
                 width="full"
@@ -55,17 +67,33 @@ const Home = () => {
               >
                 Trending
               </Button>
-              <Button
-                leftIcon={<SortIcon />}
-                width="full"
-                borderRadius="full"
-                variant="outline"
-                color="gray.700"
-                border="2px"
-              >
-                Sort by
-              </Button>
-            </HStack>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  width="full"
+                  borderRadius="full"
+                  variant="outline"
+                  color="gray.700"
+                  border="2px"
+                  flexGrow="0"
+                >
+                  <Flex justifyContent="center">
+                    <SortIcon />
+                    <Text as="span" paddingLeft={2}>
+                      Sort by
+                    </Text>
+                  </Flex>
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={() => handleSort('newest')}>
+                    Newest
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSort('oldest')}>
+                    Oldest
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
             {error && <Text>{error}</Text>}
             {postStatus === 'loading' && <Spinner size="xl" />}
             {homeStatus === 'loading' ? (
