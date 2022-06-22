@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import {
+  getDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  collection,
+  getDocs,
+} from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { toast } from 'react-toastify';
@@ -7,10 +14,24 @@ import { toast } from 'react-toastify';
 const initialState = {
   currentUser: {},
   userProfile: {},
+  allUsers: [],
   status: 'idle',
   followStatus: 'idle',
   error: null,
 };
+
+export const getAllUsers = createAsyncThunk('user/getAllusers', async () => {
+  let allUsers = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, 'users'));
+    querySnapshot.forEach(doc => {
+      allUsers.push(doc.data());
+    });
+    return allUsers;
+  } catch (err) {
+    console.error('get all users', err);
+  }
+});
 
 export const getUserProfile = createAsyncThunk(
   'user/getUserProfile',
@@ -205,6 +226,10 @@ const userSlice = createSlice({
     },
     [unfollowUser.rejected]: (state, action) => {
       state.error = action.payload;
+    },
+    [getAllUsers.fulfilled]: (state, action) => {
+      state.allUsers = action.payload;
+      state.error = null;
     },
   },
 });
