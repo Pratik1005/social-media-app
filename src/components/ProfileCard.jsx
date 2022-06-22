@@ -32,8 +32,14 @@ const ProfileCard = ({ userData }) => {
       overflow="hidden"
       marginBottom={4}
     >
-      <Box>
-        <Image src={headerImage} fallbackSrc={defaultHeader} />
+      <Box width="full">
+        <Image
+          src={headerImage}
+          fallbackSrc={defaultHeader}
+          width="full"
+          height="250px"
+          objectFit="cover"
+        />
       </Box>
       <VStack width="full" alignItems="flex-start" padding={4}>
         <HStack justifyContent="space-between" width="full">
@@ -41,7 +47,10 @@ const ProfileCard = ({ userData }) => {
             <Avatar src={photoURL} name={name} size="2xl" />
           </Box>
           <Box>
-            <ProfileCta followUserData={{ uid, name, username, photoURL }} />
+            <ProfileCta
+              followUserData={{ uid, name, username, photoURL }}
+              userData={userData}
+            />
           </Box>
         </HStack>
         <Flex justify="center" align="flex-start" flexDirection="column">

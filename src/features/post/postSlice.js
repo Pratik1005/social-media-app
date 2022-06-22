@@ -9,7 +9,8 @@ import {
   arrayRemove,
 } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
-import { db } from '../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 import { sortPosts } from '../../utils/utils';
 import { toast } from 'react-toastify';
 
@@ -32,8 +33,16 @@ const initialState = {
 
 export const addPost = createAsyncThunk(
   'post/addPost',
-  async ({ uid, postText, name, username, photoURL }, thunkAPI) => {
+  async ({ uid, postText, name, username, photoURL, postImage }, thunkAPI) => {
     try {
+      // upload post image
+      let postImageURL = '';
+      if (postImage) {
+        const imgRef = ref(storage, `posts/${postImage.name}`);
+        const uploadPostImg = await uploadBytesResumable(imgRef, postImage);
+        postImageURL = await getDownloadURL(uploadPostImg.ref);
+      }
+      // upload post
       const postRef = doc(collection(db, 'posts'), uid);
       const postId = nanoid();
       const newPost = {
@@ -43,6 +52,7 @@ export const addPost = createAsyncThunk(
         username,
         photoURL,
         postText,
+        postImage: postImageURL,
         likes: 0,
         comments: [],
         uploadDate: new Date().toString(),
@@ -74,22 +84,37 @@ export const getUserPosts = createAsyncThunk(
 
 export const editPost = createAsyncThunk(
   'post/editPost',
-  async ({ uid, id, postNewText, currentLocation }, thunkAPI) => {
+  async ({ uid, id, postNewText, postNewImage, currentLocation }, thunkAPI) => {
     try {
+      // upload image
+      let postNewImageURL = postNewImage.postImgURL;
+      if (postNewImage.postImg) {
+        const imgRef = ref(storage, `posts/${postNewImage.postImg.name}`);
+        const uploadPostImg = await uploadBytesResumable(
+          imgRef,
+          postNewImage.postImg
+        );
+        postNewImageURL = await getDownloadURL(uploadPostImg.ref);
+      }
+      // update post
       const docRef = doc(db, 'posts', uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const userAllPosts = docSnap.data().posts;
         const updatedPosts = userAllPosts.map(post => {
           if (post.id === id) {
-            return { ...post, postText: postNewText };
+            return {
+              ...post,
+              postText: postNewText,
+              postImage: postNewImageURL,
+            };
           }
           return post;
         });
         await updateDoc(docRef, {
           posts: updatedPosts,
         });
-        return { uid, id, postNewText, currentLocation };
+        return { uid, id, postNewText, currentLocation, postNewImageURL };
       }
     } catch (err) {
       thunkAPI.rejectWithValue(err.message);
@@ -179,6 +204,56 @@ export const unlikePost = createAsyncThunk(
       }
     } catch (err) {
       console.error('unlike post', err);
+      toast.error(err);
+    }
+  }
+);
+
+export const getBookmarks = createAsyncThunk('post/getBookmarks', async uid => {
+  try {
+    const docRef = doc(db, 'bookmarks', uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().bookmarks;
+    }
+  } catch (err) {
+    console.error('get bookmarks', err);
+  }
+});
+
+export const bookmarkPost = createAsyncThunk(
+  'post/bookmarkPost',
+  async ({ userId, postData }) => {
+    try {
+      const docRef = doc(db, 'bookmarks', userId);
+      await updateDoc(docRef, {
+        bookmarks: arrayUnion(postData),
+      });
+      toast.success('Added to bookmarks');
+    } catch (err) {
+      console.error('bookmark post', err);
+      toast.error(err);
+    }
+  }
+);
+
+export const unbookmarkPost = createAsyncThunk(
+  'post/unbookmarkPost',
+  async ({ userId, id }) => {
+    try {
+      const docRef = doc(db, 'bookmarks', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const updatedBookmarks = docSnap
+          .data()
+          .bookmarks.filter(bookmark => bookmark.id !== id);
+        await updateDoc(docRef, {
+          bookmarks: updatedBookmarks,
+        });
+        toast.success('Removed from bookmarks');
+      }
+    } catch (err) {
+      console.error('unbookmark post', err);
       toast.error(err);
     }
   }
@@ -374,6 +449,14 @@ export const postSlice = createSlice({
         );
       }
     },
+    bookmarkToState: (state, action) => {
+      state.bookmarks.push(action.payload);
+    },
+    unbookmarkFromState: (state, action) => {
+      state.bookmarks = state.bookmarks.filter(
+        bookmark => bookmark.id !== action.payload
+      );
+    },
     addCommentToState: (state, action) => {
       state.singlePost.comments.push(action.payload);
       toast.success('Added comment successfully');
@@ -407,25 +490,24 @@ export const postSlice = createSlice({
     [addPost.rejected]: (state, action) => {
       state.error = action.payload;
     },
+    [editPost.pending]: state => {
+      state.postStatus = 'loading';
+      state.error = null;
+    },
     [editPost.fulfilled]: (state, action) => {
-      if (action.payload.currentLocation === '/') {
-        const updatedHomePosts = state.homePosts.map(post => {
-          if (post.id === action.payload.id) {
-            return { ...post, postText: action.payload.postNewText };
-          }
-          return post;
-        });
-        state.homePosts = updatedHomePosts;
-      }
-      if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
-        const updatedUserPosts = state.userPosts.map(post => {
-          if (post.id === action.payload.id) {
-            return { ...post, postText: action.payload.postNewText };
-          }
-          return post;
-        });
-        state.userPosts = updatedUserPosts;
-      }
+      const postsArray =
+        action.payload.currentLocation === '/' ? 'homePosts' : 'userPosts';
+      state[postsArray] = state[postsArray].map(post => {
+        if (post.id === action.payload.id) {
+          return {
+            ...post,
+            postText: action.payload.postNewText,
+            postImage: action.payload.postNewImageURL,
+          };
+        }
+        return post;
+      });
+      state.postStatus = 'fulfilled';
       toast.success('Edited post successfully');
       state.error = null;
     },
@@ -449,6 +531,15 @@ export const postSlice = createSlice({
     },
     [getLikedPosts.fulfilled]: (state, action) => {
       state.likedPosts = action.payload;
+      state.error = null;
+    },
+    [getBookmarks.pending]: state => {
+      state.bookmarkStatus = 'loading';
+      state.error = null;
+    },
+    [getBookmarks.fulfilled]: (state, action) => {
+      state.bookmarks = action.payload;
+      state.bookmarkStatus = 'fulfilled';
       state.error = null;
     },
     [getSinglePost.pending]: state => {
@@ -500,5 +591,7 @@ export const {
   deleteCommentToState,
   likePostToState,
   unlikePostToState,
+  bookmarkToState,
+  unbookmarkFromState,
 } = postSlice.actions;
 export default postSlice.reducer;

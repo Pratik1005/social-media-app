@@ -19,7 +19,7 @@ import { auth, db } from './firebase';
 import { useDispatch } from 'react-redux';
 import { setUserData } from './features/auth/authSlice';
 import { saveCurrentUser } from './features/user/userSlice';
-import { getLikedPosts } from './features/post/postSlice';
+import { getLikedPosts, getBookmarks } from './features/post/postSlice';
 
 function App() {
   const bgColor = useColorModeValue('#f7f7f7', '#171923');
@@ -33,6 +33,7 @@ function App() {
         dispatch(setUserData(currentData));
         dispatch(saveCurrentUser(currentData));
         dispatch(getLikedPosts(currentData.uid));
+        dispatch(getBookmarks(currentData.uid));
       }
     }
   });

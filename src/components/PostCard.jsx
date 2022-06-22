@@ -1,5 +1,13 @@
-import { VStack, HStack, Text, Box, Flex, Avatar } from '@chakra-ui/react';
-import { formatDate, isPostLiked } from '../utils/utils';
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Flex,
+  Avatar,
+  Image,
+} from '@chakra-ui/react';
+import { formatDate, isPostLiked, isPostBookmarked } from '../utils/utils';
 import { NavLink, useLocation } from 'react-router-dom';
 import { PostOption } from './index';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,11 +16,15 @@ import {
   unlikePost,
   likePostToState,
   unlikePostToState,
+  bookmarkPost,
+  bookmarkToState,
+  unbookmarkPost,
+  unbookmarkFromState,
 } from '../features/post/postSlice';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
-  const { likedPosts } = useSelector(state => state.post);
+  const { likedPosts, bookmarks } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const location = useLocation();
   const {
@@ -22,6 +34,7 @@ const PostCard = ({ postData }) => {
     username,
     photoURL,
     postText,
+    postImage,
     likes,
     comments,
     uploadDate,
@@ -52,6 +65,16 @@ const PostCard = ({ postData }) => {
           postUserUid: uid,
         })
       );
+    }
+  };
+
+  const handleBookmark = () => {
+    if (isPostBookmarked(id, bookmarks)) {
+      dispatch(unbookmarkFromState(id));
+      dispatch(unbookmarkPost({ userId: currentUser.uid, id }));
+    } else {
+      dispatch(bookmarkToState(postData));
+      dispatch(bookmarkPost({ userId: currentUser.uid, postData }));
     }
   };
 
@@ -87,11 +110,14 @@ const PostCard = ({ postData }) => {
       <Flex justifyContent="space-between" width="full">
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
-            <Avatar name={name} src={photoURL} />
+            <Avatar
+              name={currentUser.uid === uid ? currentUser.name : name}
+              src={currentUser.uid === uid ? currentUser.photoURL : photoURL}
+            />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              {name}
+              {currentUser.uid === uid ? currentUser.name : name}
             </Text>
             <HStack>
               <Text as="span" color="gray.600" marginTop={0}>
@@ -111,6 +137,14 @@ const PostCard = ({ postData }) => {
       <Text as={NavLink} to={`/post/${uid}/${id}`} width="full">
         {postText}
       </Text>
+      {postImage && (
+        <Image
+          src={postImage}
+          width="full"
+          height="300px"
+          objectFit="contain"
+        />
+      )}
       <HStack justify="space-between" width="full">
         <HStack as={NavLink} to={`/post/${uid}/${id}`}>
           <Box
@@ -147,8 +181,9 @@ const PostCard = ({ postData }) => {
           color="gray.600"
           fontSize="18px"
           cursor="pointer"
+          onClick={handleBookmark}
         >
-          bookmark_border
+          {isPostBookmarked(id, bookmarks) ? 'bookmark' : 'bookmark_border'}
         </Box>
       </HStack>
     </VStack>

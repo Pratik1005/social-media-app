@@ -10,20 +10,56 @@ import {
   Textarea,
   useDisclosure,
   Avatar,
+  Box,
+  Image,
+  FormLabel,
+  Input,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { addPost } from '../features/post/postSlice';
 
 const AddPost = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [postText, setPostText] = useState('');
-  const { userData } = useSelector(state => state.auth);
-  const { uid, name, username, photoURL } = userData;
+  const [postImage, setPostImage] = useState({
+    postImgURL: '',
+    postImg: '',
+  });
+  const { currentUser } = useSelector(state => state.user);
+  const { uid, name, username, photoURL } = currentUser;
   const dispatch = useDispatch();
 
+  const handlePostImage = e => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size < 5000000) {
+        setPostImage(() => ({
+          postImgURL: URL.createObjectURL(file),
+          postImg: file,
+        }));
+      } else {
+        toast.error('Image size should not exceed 5MB');
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPostImage(() => ({ postImgURL: '', postImg: '' }));
+  };
+
   const handleAddPost = () => {
-    dispatch(addPost({ uid, postText, name, username, photoURL }));
+    dispatch(
+      addPost({
+        uid,
+        postText,
+        name,
+        username,
+        photoURL,
+        postImage: postImage.postImg,
+      })
+    );
     onClose();
   };
   return (
@@ -52,10 +88,51 @@ const AddPost = () => {
             <Textarea
               placeholder="Tell your Insight..."
               resize="none"
-              rows="5"
               value={postText}
               onChange={e => setPostText(e.target.value)}
             />
+            {postImage.postImg && (
+              <Box position="relative" paddingTop={2}>
+                <Image
+                  src={postImage.postImgURL}
+                  width="full"
+                  height="250px"
+                  objectFit="contain"
+                />
+                <Box
+                  as="span"
+                  className="material-icons"
+                  color="#fff"
+                  backgroundColor="rgba(0,0,0,0.5)"
+                  borderRadius="full"
+                  padding={2}
+                  cursor="pointer"
+                  position="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                  onClick={handleRemoveImage}
+                >
+                  close
+                </Box>
+              </Box>
+            )}
+            <FormLabel margin={0}>
+              <Box
+                as="span"
+                className="material-icons-outlined"
+                paddingTop={2}
+                cursor="pointer"
+              >
+                image
+              </Box>
+              <Input
+                type="file"
+                display="none"
+                accept="image/jpg, image/png, image/jpeg"
+                onChange={e => handlePostImage(e)}
+              />
+            </FormLabel>
           </ModalBody>
 
           <ModalFooter>
