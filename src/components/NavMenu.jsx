@@ -1,4 +1,4 @@
-import { VStack, Box, HStack, Text } from '@chakra-ui/react';
+import { VStack, Box, HStack, Text, useColorModeValue } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import { AddPost } from './index';
 
@@ -7,6 +7,7 @@ const getActiveStyle = ({ isActive }) => ({
 });
 
 const NavMenu = () => {
+  const menuHoverColor = useColorModeValue('blackAlpha.200', 'gray.700');
   return (
     <VStack w="full" spacing={2} align="flex-start" position="sticky" top="74">
       <HStack
@@ -15,7 +16,7 @@ const NavMenu = () => {
         fontSize={20}
         py={2}
         px={4}
-        _hover={{ backgroundColor: 'blackAlpha.200' }}
+        _hover={{ backgroundColor: menuHoverColor }}
         borderRadius="full"
         style={getActiveStyle}
       >
@@ -30,7 +31,7 @@ const NavMenu = () => {
         fontSize={20}
         py={2}
         px={4}
-        _hover={{ backgroundColor: 'blackAlpha.200' }}
+        _hover={{ backgroundColor: menuHoverColor }}
         borderRadius="full"
         style={getActiveStyle}
       >
@@ -45,7 +46,7 @@ const NavMenu = () => {
         fontSize={20}
         py={2}
         px={4}
-        _hover={{ backgroundColor: 'blackAlpha.200' }}
+        _hover={{ backgroundColor: menuHoverColor }}
         borderRadius="full"
         style={getActiveStyle}
       >

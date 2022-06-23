@@ -6,6 +6,7 @@ import {
   HStack,
   VStack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
@@ -17,6 +18,8 @@ const SearchBar = () => {
   const { allUsers } = useSelector(state => state.user);
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+  const boxBgColor = useColorModeValue('#ffffff', 'gray.700');
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const debounce = func => {
     let timer;
@@ -53,7 +56,7 @@ const SearchBar = () => {
           <Avatar name={name} src={photoURL} />
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text fontWeight="500">{name}</Text>
-            <Text color="gray.600" marginTop={0}>
+            <Text color={lightTextColor} marginTop={0}>
               {username}
             </Text>
           </Flex>
@@ -77,7 +80,7 @@ const SearchBar = () => {
       />
       {searchValue.trim().length > 0 && (
         <VStack
-          backgroundColor="#fff"
+          backgroundColor={boxBgColor}
           borderRadius="2xl"
           align="flex-start"
           width="full"

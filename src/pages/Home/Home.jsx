@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { NavMenu, TopBar, WhoToFollow, PostCard } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
@@ -27,6 +28,10 @@ const Home = () => {
     state => state.post
   );
   const dispatch = useDispatch();
+  const filterBtnColor = useColorModeValue(
+    'gray.700',
+    'rgba(255,255,255,0.92)'
+  );
 
   useEffect(() => {
     dispatch(
@@ -61,7 +66,7 @@ const Home = () => {
                 width="full"
                 borderRadius="full"
                 variant="outline"
-                color="gray.700"
+                color={filterBtnColor}
                 border="2px"
                 onClick={handleTrending}
               >
@@ -73,7 +78,7 @@ const Home = () => {
                   width="full"
                   borderRadius="full"
                   variant="outline"
-                  color="gray.700"
+                  color={filterBtnColor}
                   border="2px"
                   flexGrow="0"
                 >

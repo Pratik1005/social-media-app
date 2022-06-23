@@ -1,9 +1,21 @@
-import { HStack, Box, Heading, Tooltip, Avatar } from '@chakra-ui/react';
+import {
+  HStack,
+  Box,
+  Heading,
+  Avatar,
+  useColorMode,
+  useColorModeValue,
+  IconButton,
+} from '@chakra-ui/react';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const TopBar = () => {
   const { currentUser } = useSelector(state => state.user);
+  const { toggleColorMode } = useColorMode();
+  const SwitchIcon = useColorModeValue(FaMoon, FaSun);
+  const topbarBgColor = useColorModeValue('rgb(247,247,247)', 'rgb(26,32,44)');
   return (
     <HStack
       justify="space-between"
@@ -11,7 +23,7 @@ const TopBar = () => {
       paddingY={2}
       position="sticky"
       top="0"
-      backgroundColor="rgba(247,247,247,0.9)"
+      backgroundColor={topbarBgColor}
       zIndex="1"
     >
       <Heading
@@ -23,16 +35,14 @@ const TopBar = () => {
         Insight
       </Heading>
       <HStack>
-        <Tooltip label="Change theme" fontSize="sm">
-          <Box
-            as="span"
-            className="material-icons"
-            marginRight={8}
-            cursor="pointer"
-          >
-            dark_mode
-          </Box>
-        </Tooltip>
+        <IconButton
+          size="md"
+          fontSize="lg"
+          variant="ghost"
+          marginRight={8}
+          onClick={toggleColorMode}
+          icon={<SwitchIcon />}
+        />
 
         <Box
           as={NavLink}

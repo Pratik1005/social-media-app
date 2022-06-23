@@ -7,6 +7,7 @@ import {
   Heading,
   Flex,
   Box,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { SearchBar } from './index';
 import { useSelector, useDispatch } from 'react-redux';
@@ -23,6 +24,8 @@ const WhoToFollow = () => {
       user => !following.some(followingUser => user.uid === followingUser.uid)
     )
     .filter(user => user.uid !== currentUser.uid);
+  const boxBgColor = useColorModeValue('#ffffff', 'gray.700');
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const handleFollowUser = userData => {
     dispatch(
@@ -48,8 +51,8 @@ const WhoToFollow = () => {
             <Avatar name={name} src={photoURL} />
             <Flex justify="center" align="flex-start" flexDirection="column">
               <Text fontWeight="500">{name}</Text>
-              <Text color="gray.600" marginTop={0}>
-                {username}
+              <Text color={lightTextColor} marginTop={0}>
+                @{username}
               </Text>
             </Flex>
           </HStack>
@@ -71,7 +74,7 @@ const WhoToFollow = () => {
     <VStack position="sticky" top="74">
       <SearchBar />
       <VStack
-        backgroundColor="#fff"
+        backgroundColor={boxBgColor}
         borderRadius="2xl"
         align="flex-start"
         width="full"

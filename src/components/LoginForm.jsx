@@ -10,6 +10,7 @@ import {
   InputGroup,
   InputRightElement,
   Box,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -27,6 +28,7 @@ const LoginForm = () => {
     email: '',
     password: '',
   });
+  const formBgColor = useColorModeValue('#fff', 'gray.700');
 
   const handleShowPassword = () => {
     setShowPassword(prev => !prev);
@@ -58,7 +60,7 @@ const LoginForm = () => {
       width="full"
       spacing={5}
       padding={8}
-      backgroundColor="#fff"
+      backgroundColor={formBgColor}
       borderRadius="xl"
       boxShadow="lg"
     >

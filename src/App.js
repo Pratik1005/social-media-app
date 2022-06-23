@@ -22,7 +22,7 @@ import { saveCurrentUser } from './features/user/userSlice';
 import { getLikedPosts, getBookmarks } from './features/post/postSlice';
 
 function App() {
-  const bgColor = useColorModeValue('#f7f7f7', '#171923');
+  const bgColor = useColorModeValue('#f7f7f7', '');
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, async user => {

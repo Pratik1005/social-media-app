@@ -7,6 +7,7 @@ import {
   Image,
   Flex,
   Avatar,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { defaultHeader } from '../asset';
 import { ProfileCta, UsersList } from './index';
@@ -23,10 +24,12 @@ const ProfileCard = ({ userData }) => {
     bio,
     website,
   } = userData;
+  const profileBgColor = useColorModeValue('#ffffff', 'gray.700');
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   return (
     <VStack
-      backgroundColor="#fff"
+      backgroundColor={profileBgColor}
       borderRadius="2xl"
       boxShadow="xl"
       overflow="hidden"
@@ -57,7 +60,7 @@ const ProfileCard = ({ userData }) => {
           <Text fontWeight="500" fontSize="20px">
             {name}
           </Text>
-          <Text color="gray.600" marginTop={0}>
+          <Text color={lightTextColor} marginTop={0}>
             {`@${username}`}
           </Text>
         </Flex>
