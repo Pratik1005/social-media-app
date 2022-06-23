@@ -88,7 +88,7 @@ const SearchBar = () => {
           spacing={5}
           boxShadow="xl"
           position="absolute"
-          top="40px"
+          top={['160px', '160px', '160px', '40px']}
           left="0"
           zIndex="1"
         >

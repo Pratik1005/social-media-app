@@ -40,14 +40,14 @@ const ProfileCard = ({ userData }) => {
           src={headerImage}
           fallbackSrc={defaultHeader}
           width="full"
-          height="250px"
+          height={['130px', '250px']}
           objectFit="cover"
         />
       </Box>
       <VStack width="full" alignItems="flex-start" padding={4}>
         <HStack justifyContent="space-between" width="full">
           <Box width="120px" height="120px" marginTop="-80px">
-            <Avatar src={photoURL} name={name} size="2xl" />
+            <Avatar src={photoURL} name={name} size={['xl', '2xl']} />
           </Box>
           <Box>
             <ProfileCta

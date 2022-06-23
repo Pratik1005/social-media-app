@@ -19,7 +19,7 @@ const TopBar = () => {
   return (
     <HStack
       justify="space-between"
-      marginBottom={2}
+      marginBottom={[0, 2, 2]}
       paddingY={2}
       position="sticky"
       top="0"
@@ -28,9 +28,10 @@ const TopBar = () => {
     >
       <Heading
         as="h1"
-        fontSize="5xl"
+        fontSize={['4xl', '5xl']}
         fontFamily="'Parisienne', cursive;"
         color="#6d28d9"
+        paddingLeft={['8px']}
       >
         Insight
       </Heading>

@@ -170,15 +170,6 @@ const PostCard = ({ postData }) => {
             {comments.length}
           </Box>
         </HStack>
-        <Box
-          as="span"
-          className="material-icons"
-          color={iconColor}
-          fontSize="18px"
-          cursor="pointer"
-        >
-          share
-        </Box>
         <HStack cursor="pointer" onClick={handleLikePost}>
           {isPostLiked(id, likedPosts) ? <LikeIcon /> : <UnlikeIcon />}
           <Box as="span" fontSize="14px">
