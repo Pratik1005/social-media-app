@@ -11,6 +11,7 @@ import {
   SignUp,
   Profile,
   SinglePost,
+  PageNotFound,
 } from './pages';
 import { RequiresAuth } from './features/auth/RequiresAuth';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -44,6 +45,7 @@ function App() {
       <Routes>
         <Route path={'/login'} element={<Login />} />
         <Route path={'/signup'} element={<SignUp />} />
+        <Route path={'*'} element={<PageNotFound />} />
         <Route element={<RequiresAuth />}>
           <Route path={'/'} element={<Home />} />
           <Route path={'/explore'} element={<Explore />} />
