@@ -1,7 +1,7 @@
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
 import {
   Home,
@@ -23,7 +23,6 @@ import { saveCurrentUser } from './features/user/userSlice';
 import { getLikedPosts, getBookmarks } from './features/post/postSlice';
 
 function App() {
-  const bgColor = useColorModeValue('#f7f7f7', '');
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, async user => {
@@ -40,7 +39,7 @@ function App() {
   });
 
   return (
-    <Box backgroundColor={bgColor} minHeight="100vh">
+    <Box minHeight="100vh">
       <ToastContainer autoClose={1200} />
       <Routes>
         <Route path={'/login'} element={<Login />} />

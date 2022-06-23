@@ -40,6 +40,7 @@ const Home = () => {
     'gray.700',
     'rgba(255,255,255,0.92)'
   );
+  const bodyBgColor = useColorModeValue('#f7f7f7');
 
   useEffect(() => {
     dispatch(
@@ -61,7 +62,11 @@ const Home = () => {
   const SortIcon = () => <span className="material-icons">swap_vert</span>;
   return (
     <>
-      <Container maxWidth="container.xl" paddingX={[0, 0, 4]}>
+      <Container
+        maxWidth="container.xl"
+        paddingX={[0, 0, 4]}
+        backgroundColor={bodyBgColor}
+      >
         <TopBar />
         <Grid
           templateColumns={['1fr', '1fr', '1fr 3fr', '1fr 3fr 2fr']}
