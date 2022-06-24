@@ -6,6 +6,7 @@ import {
   Flex,
   Avatar,
   Image,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { formatDate, isPostLiked, isPostBookmarked } from '../utils/utils';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -40,6 +41,10 @@ const PostCard = ({ postData }) => {
     uploadDate,
   } = postData;
   const formattedDate = formatDate(uploadDate);
+  const postBgColor = useColorModeValue('#ffffff', 'gray.700');
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
+  const iconColor = useColorModeValue('gray.600', 'gray.100');
+  const likeColor = useColorModeValue('red.700', 'gray.100');
 
   const handleLikePost = () => {
     if (isPostLiked(id, likedPosts)) {
@@ -80,7 +85,12 @@ const PostCard = ({ postData }) => {
 
   const LikeIcon = () => {
     return (
-      <Box as="span" className="material-icons" color="red.700" fontSize="18px">
+      <Box
+        as="span"
+        className="material-icons"
+        color={likeColor}
+        fontSize="18px"
+      >
         favorite
       </Box>
     );
@@ -91,7 +101,7 @@ const PostCard = ({ postData }) => {
       <Box
         as="span"
         className="material-icons-outlined"
-        color="gray.600"
+        color={iconColor}
         fontSize="18px"
       >
         favorite_border
@@ -101,7 +111,7 @@ const PostCard = ({ postData }) => {
   return (
     <VStack
       spacing={4}
-      backgroundColor="#fff"
+      backgroundColor={postBgColor}
       borderRadius="2xl"
       padding={4}
       align="flex-start"
@@ -120,13 +130,13 @@ const PostCard = ({ postData }) => {
               {currentUser.uid === uid ? currentUser.name : name}
             </Text>
             <HStack>
-              <Text as="span" color="gray.600" marginTop={0}>
+              <Text as="span" color={lightTextColor} marginTop={0}>
                 {`@${username}`}
               </Text>
               <Text as="span" fontWeight="500">
                 ·
               </Text>
-              <Text as="span" fontSize="14px">
+              <Text as="span" fontSize="14px" color={lightTextColor}>
                 {formattedDate}
               </Text>
             </HStack>
@@ -150,7 +160,7 @@ const PostCard = ({ postData }) => {
           <Box
             as="span"
             className="material-icons-outlined"
-            color="gray.600"
+            color={iconColor}
             fontSize="18px"
             cursor="pointer"
           >
@@ -160,15 +170,6 @@ const PostCard = ({ postData }) => {
             {comments.length}
           </Box>
         </HStack>
-        <Box
-          as="span"
-          className="material-icons"
-          color="gray.600"
-          fontSize="18px"
-          cursor="pointer"
-        >
-          share
-        </Box>
         <HStack cursor="pointer" onClick={handleLikePost}>
           {isPostLiked(id, likedPosts) ? <LikeIcon /> : <UnlikeIcon />}
           <Box as="span" fontSize="14px">
@@ -178,7 +179,7 @@ const PostCard = ({ postData }) => {
         <Box
           as="span"
           className="material-icons"
-          color="gray.600"
+          color={iconColor}
           fontSize="18px"
           cursor="pointer"
           onClick={handleBookmark}

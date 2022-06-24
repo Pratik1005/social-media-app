@@ -11,8 +11,13 @@ const SignUp = () => {
       justifyContent="space-between"
       height="100vh"
     >
-      <Flex padding={16}>
-        <VStack width="full" alignItems="flex-start" justifyContent="center">
+      <Flex padding={[4, 8, 16]} paddingTop={[8, 8]}>
+        <VStack
+          width="full"
+          alignItems="flex-start"
+          justifyContent="center"
+          display={['none', 'none', 'flex']}
+        >
           <Heading fontSize="4xl">
             Share your
             <Box

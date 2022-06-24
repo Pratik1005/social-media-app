@@ -11,11 +11,13 @@ import {
   Box,
   Flex,
   HStack,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 
 const UsersList = ({ title, users }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const SingleUser = ({ userData }) => {
     const { uid, name, username, photoURL } = userData;
@@ -28,7 +30,7 @@ const UsersList = ({ title, users }) => {
           <Text as="span" fontWeight="500">
             {name}
           </Text>
-          <Text as="span" color="gray.600" marginTop={0}>
+          <Text as="span" color={lightTextColor} marginTop={0}>
             {`@${username}`}
           </Text>
         </Flex>

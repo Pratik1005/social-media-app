@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import {
+  getDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  collection,
+  getDocs,
+} from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { toast } from 'react-toastify';
@@ -7,10 +14,24 @@ import { toast } from 'react-toastify';
 const initialState = {
   currentUser: {},
   userProfile: {},
+  allUsers: [],
   status: 'idle',
   followStatus: 'idle',
   error: null,
 };
+
+export const getAllUsers = createAsyncThunk('user/getAllusers', async () => {
+  let allUsers = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, 'users'));
+    querySnapshot.forEach(doc => {
+      allUsers.push(doc.data());
+    });
+    return allUsers;
+  } catch (err) {
+    console.error('get all users', err);
+  }
+});
 
 export const getUserProfile = createAsyncThunk(
   'user/getUserProfile',
@@ -36,7 +57,18 @@ export const getUserProfile = createAsyncThunk(
 
 export const followUser = createAsyncThunk(
   'user/followUser',
-  async ({ currentUserData, uid, name, username, photoURL }, thunkAPI) => {
+  async (
+    {
+      suggest,
+      currentLocation,
+      currentUserData,
+      uid,
+      name,
+      username,
+      photoURL,
+    },
+    thunkAPI
+  ) => {
     try {
       // Add current user to user followers
       const followUserRef = doc(db, 'users', uid);
@@ -55,7 +87,7 @@ export const followUser = createAsyncThunk(
       await updateDoc(currentUserRef, {
         following: arrayUnion(followUserData),
       });
-      return { userData, followUserData };
+      return { userData, followUserData, currentLocation, suggest };
     } catch (err) {
       thunkAPI.rejectWithValue(err.message);
     }
@@ -180,8 +212,37 @@ const userSlice = createSlice({
       state.error = null;
     },
     [followUser.fulfilled]: (state, action) => {
-      state.userProfile.userData.followers.push(action.payload.userData);
-      state.currentUser.following.push(action.payload.followUserData);
+      if (
+        action.payload.currentLocation.includes(action.payload.userData.uid)
+      ) {
+        state.userProfile.userData.following.push(
+          action.payload.followUserData
+        );
+      }
+      if (
+        action.payload.currentLocation.includes('user') &&
+        !action.payload.currentLocation.includes(action.payload.userData.uid)
+      ) {
+        if (action.payload.suggest) {
+          state.currentUser.following.push(action.payload.followUserData);
+          if (
+            action.payload.currentLocation.includes(
+              action.payload.followUserData.uid
+            )
+          ) {
+            state.userProfile.userData.followers.push(action.payload.userData);
+          }
+        } else {
+          state.userProfile.userData.followers.push(action.payload.userData);
+          state.currentUser.following.push(action.payload.followUserData);
+        }
+      }
+      if (
+        action.payload.currentLocation.includes('/') ||
+        action.payload.currentLocation.includes('explore')
+      ) {
+        state.currentUser.following.push(action.payload.followUserData);
+      }
       state.followStatus = 'fulfilled';
       state.error = null;
     },
@@ -205,6 +266,10 @@ const userSlice = createSlice({
     },
     [unfollowUser.rejected]: (state, action) => {
       state.error = action.payload;
+    },
+    [getAllUsers.fulfilled]: (state, action) => {
+      state.allUsers = action.payload;
+      state.error = null;
     },
   },
 });

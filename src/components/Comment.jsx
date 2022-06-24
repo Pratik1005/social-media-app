@@ -7,6 +7,7 @@ import {
   Text,
   Button,
   Flex,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -20,6 +21,8 @@ const Comment = ({ postData }) => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.user);
   const [commentText, setCommentText] = useState('');
+  const boxBgColor = useColorModeValue('#ffffff', 'gray.700');
+  const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const handleAddComment = () => {
     const userComment = {
@@ -49,7 +52,7 @@ const Comment = ({ postData }) => {
                 {name}
               </Text>
               <HStack>
-                <Text as="span" color="gray.600" marginTop={0}>
+                <Text as="span" color={lightTextColor} marginTop={0}>
                   {`@${username}`}
                 </Text>
               </HStack>
@@ -66,7 +69,7 @@ const Comment = ({ postData }) => {
   return (
     <VStack
       spacing={4}
-      backgroundColor="#fff"
+      backgroundColor={boxBgColor}
       borderRadius="2xl"
       padding={4}
       align="flex-start"

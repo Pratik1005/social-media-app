@@ -70,11 +70,30 @@ const AddPost = () => {
         borderRadius="full"
         backgroundColor="#6D28D9"
         color="#fff"
+        display={['none', 'none', 'block']}
         variant="solid"
         _hover={{ backgroundColor: '#6d28d9' }}
         onClick={onOpen}
       >
         Add Post
+      </Button>
+      <Button
+        size="lg"
+        borderRadius="full"
+        backgroundColor="#6D28D9"
+        color="#fff"
+        display={['block', 'block', 'none']}
+        position="fixed"
+        right="16px"
+        bottom="72px"
+        padding={3}
+        variant="solid"
+        _hover={{ backgroundColor: '#6d28d9' }}
+        onClick={onOpen}
+      >
+        <Box as="span" className="material-icons">
+          add
+        </Box>
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">

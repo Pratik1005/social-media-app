@@ -16,3 +16,4 @@ export { Comment } from './Comment';
 export { EditComment } from './EditComment';
 export { CommentOption } from './CommentOption';
 export { EditProfile } from './EditProfile';
+export { MobileMenu } from './MobileMenu';
