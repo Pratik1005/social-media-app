@@ -65,7 +65,6 @@ const LoginForm = () => {
       boxShadow="lg"
     >
       <Heading size="xl">Login</Heading>
-      <Text>{userData?.name}</Text>
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
         <Input

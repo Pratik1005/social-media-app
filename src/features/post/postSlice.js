@@ -150,6 +150,8 @@ export const getLikedPosts = createAsyncThunk(
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         return docSnap.data().likedPosts;
+      } else {
+        return [];
       }
     } catch (err) {
       console.error('get liked posts', err);
@@ -215,6 +217,8 @@ export const getBookmarks = createAsyncThunk('post/getBookmarks', async uid => {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       return docSnap.data().bookmarks;
+    } else {
+      return [];
     }
   } catch (err) {
     console.error('get bookmarks', err);
