@@ -34,9 +34,7 @@ const PostCard = ({ postData }) => {
   const {
     uid,
     id,
-    name,
     username,
-    photoURL,
     postText,
     postImage,
     likes,
@@ -139,10 +137,6 @@ const PostCard = ({ postData }) => {
       <Flex justifyContent="space-between" width="full">
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
-            {/* <Avatar
-              name={currentUser.uid === uid ? currentUser.name : name}
-              src={currentUser.uid === uid ? currentUser.photoURL : photoURL}
-            /> */}
             <Avatar name={updatedUser.name} src={updatedUser.photoURL} />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
