@@ -14,35 +14,16 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { useFetchUser } from '../hooks/useFetchUser';
 
 const UsersList = ({ title, users }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const lightTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const SingleUser = ({ userData }) => {
-    const { uid, name, username, photoURL } = userData;
-    const [updatedUser, setUpdatedUser] = useState({ name, photoURL });
+    const { uid, username } = userData;
 
-    useEffect(() => {
-      (async () => {
-        try {
-          const userRef = doc(db, 'users', uid);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            const newData = userSnap.data();
-            setUpdatedUser(() => ({
-              name: newData.name,
-              photoURL: newData.photoURL,
-            }));
-          }
-        } catch (err) {
-          console.error('user list profile page', err);
-        }
-      })();
-    }, [uid]);
+    const updatedUser = useFetchUser(uid, 'users list modal');
     return (
       <HStack paddingY={4}>
         <Box as={NavLink} to={`/user/${uid}`}>

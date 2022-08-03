@@ -22,9 +22,7 @@ import {
   unbookmarkPost,
   unbookmarkFromState,
 } from '../features/post/postSlice';
-import { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { useFetchUser } from '../hooks';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
@@ -34,9 +32,7 @@ const PostCard = ({ postData }) => {
   const {
     uid,
     id,
-    name,
     username,
-    photoURL,
     postText,
     postImage,
     likes,
@@ -48,25 +44,8 @@ const PostCard = ({ postData }) => {
   const lightTextColor = useColorModeValue('gray.600', 'gray.400');
   const iconColor = useColorModeValue('gray.600', 'gray.100');
   const likeColor = useColorModeValue('red.700', 'gray.100');
-  const [updatedUser, setUpdatedUser] = useState({ name, photoURL });
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const userRef = doc(db, 'users', uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const newData = userSnap.data();
-          setUpdatedUser(() => ({
-            name: newData.name,
-            photoURL: newData.photoURL,
-          }));
-        }
-      } catch (err) {
-        console.error('Post card new user data', err);
-      }
-    })();
-  }, [uid]);
+  const updatedUser = useFetchUser(uid, 'post card');
 
   const handleLikePost = () => {
     if (isPostLiked(id, likedPosts)) {

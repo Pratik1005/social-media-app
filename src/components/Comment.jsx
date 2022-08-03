@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
 import { addComment, addCommentToState } from '../features/post/postSlice';
 import { CommentOption } from './index';
+import { useFetchUser } from '../hooks';
 
 const Comment = ({ postData }) => {
   const { comments } = postData;
@@ -39,17 +40,18 @@ const Comment = ({ postData }) => {
   };
 
   const UserComment = ({ commentData }) => {
-    const { uid, name, username, photoURL, commentText } = commentData;
+    const { uid, username, commentText } = commentData;
+    const updatedUser = useFetchUser(uid, 'comment');
     return (
       <VStack width="full" align="flex-start">
         <Flex justifyContent="space-between" width="full">
           <HStack>
             <Box as={NavLink} to={`/user/${uid}`}>
-              <Avatar name={name} src={photoURL} />
+              <Avatar name={updatedUser.name} src={updatedUser.photoURL} />
             </Box>
             <Flex justify="center" align="flex-start" flexDirection="column">
               <Text as="span" fontWeight="500">
-                {name}
+                {updatedUser.name}
               </Text>
               <HStack>
                 <Text as="span" color={lightTextColor} marginTop={0}>
