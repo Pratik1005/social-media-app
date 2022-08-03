@@ -61,7 +61,7 @@ const PostCard = ({ postData }) => {
         console.error('Post card new user data', err);
       }
     })();
-  }, []);
+  }, [uid]);
 
   const handleLikePost = () => {
     if (isPostLiked(id, likedPosts)) {
