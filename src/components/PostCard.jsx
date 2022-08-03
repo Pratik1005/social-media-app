@@ -22,6 +22,9 @@ import {
   unbookmarkPost,
   unbookmarkFromState,
 } from '../features/post/postSlice';
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
@@ -45,6 +48,22 @@ const PostCard = ({ postData }) => {
   const lightTextColor = useColorModeValue('gray.600', 'gray.400');
   const iconColor = useColorModeValue('gray.600', 'gray.100');
   const likeColor = useColorModeValue('red.700', 'gray.100');
+  const [updatedUser, setUpdatedUser] = useState({ name: '', photoURL: '' });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const userRef = doc(db, 'users', uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const newData = userSnap.data();
+          setUpdatedUser({ name: newData.name, photoURL: newData.photoURL });
+        }
+      } catch (err) {
+        console.error('Post card new user data', err);
+      }
+    })();
+  }, []);
 
   const handleLikePost = () => {
     if (isPostLiked(id, likedPosts)) {
@@ -120,14 +139,15 @@ const PostCard = ({ postData }) => {
       <Flex justifyContent="space-between" width="full">
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
-            <Avatar
+            {/* <Avatar
               name={currentUser.uid === uid ? currentUser.name : name}
               src={currentUser.uid === uid ? currentUser.photoURL : photoURL}
-            />
+            /> */}
+            <Avatar name={updatedUser.name} src={updatedUser.photoURL} />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              {currentUser.uid === uid ? currentUser.name : name}
+              {updatedUser.name}
             </Text>
             <HStack>
               <Text as="span" color={lightTextColor} marginTop={0}>
