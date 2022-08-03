@@ -14,6 +14,9 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const UsersList = ({ title, users }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -21,14 +24,33 @@ const UsersList = ({ title, users }) => {
 
   const SingleUser = ({ userData }) => {
     const { uid, name, username, photoURL } = userData;
+    const [updatedUser, setUpdatedUser] = useState({ name, photoURL });
+
+    useEffect(() => {
+      (async () => {
+        try {
+          const userRef = doc(db, 'users', uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const newData = userSnap.data();
+            setUpdatedUser(() => ({
+              name: newData.name,
+              photoURL: newData.photoURL,
+            }));
+          }
+        } catch (err) {
+          console.error('user list profile page', err);
+        }
+      })();
+    }, [uid]);
     return (
       <HStack paddingY={4}>
         <Box as={NavLink} to={`/user/${uid}`}>
-          <Avatar name={name} src={photoURL} />
+          <Avatar name={updatedUser.name} src={updatedUser.photoURL} />
         </Box>
         <Flex justify="center" align="flex-start" flexDirection="column">
           <Text as="span" fontWeight="500">
-            {name}
+            {updatedUser.name}
           </Text>
           <Text as="span" color={lightTextColor} marginTop={0}>
             {`@${username}`}
