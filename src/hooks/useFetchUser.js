@@ -22,7 +22,7 @@ const useFetchUser = (uid, errorTitle) => {
       }
     };
     fetchUser(uid);
-  }, [uid]);
+  }, [uid, errorTitle]);
   return updatedUser;
 };
 
