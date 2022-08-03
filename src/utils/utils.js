@@ -1,6 +1,3 @@
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-
 const formatDate = uploadDate => {
   const dateArray = uploadDate.split(' ');
   const date = dateArray[2];
