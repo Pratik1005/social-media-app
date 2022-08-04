@@ -22,6 +22,7 @@ import {
   unbookmarkPost,
   unbookmarkFromState,
 } from '../features/post/postSlice';
+import { useFetchUser } from '../hooks';
 
 const PostCard = ({ postData }) => {
   const { currentUser } = useSelector(state => state.user);
@@ -31,9 +32,7 @@ const PostCard = ({ postData }) => {
   const {
     uid,
     id,
-    name,
     username,
-    photoURL,
     postText,
     postImage,
     likes,
@@ -45,6 +44,8 @@ const PostCard = ({ postData }) => {
   const lightTextColor = useColorModeValue('gray.600', 'gray.400');
   const iconColor = useColorModeValue('gray.600', 'gray.100');
   const likeColor = useColorModeValue('red.700', 'gray.100');
+
+  const updatedUser = useFetchUser(uid, 'post card');
 
   const handleLikePost = () => {
     if (isPostLiked(id, likedPosts)) {
@@ -120,14 +121,11 @@ const PostCard = ({ postData }) => {
       <Flex justifyContent="space-between" width="full">
         <HStack>
           <Box as={NavLink} to={`/user/${uid}`}>
-            <Avatar
-              name={currentUser.uid === uid ? currentUser.name : name}
-              src={currentUser.uid === uid ? currentUser.photoURL : photoURL}
-            />
+            <Avatar name={updatedUser.name} src={updatedUser.photoURL} />
           </Box>
           <Flex justify="center" align="flex-start" flexDirection="column">
             <Text as="span" fontWeight="500">
-              {currentUser.uid === uid ? currentUser.name : name}
+              {updatedUser.name}
             </Text>
             <HStack>
               <Text as="span" color={lightTextColor} marginTop={0}>
