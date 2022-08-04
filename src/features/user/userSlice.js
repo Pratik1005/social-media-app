@@ -108,7 +108,7 @@ export const unfollowUser = createAsyncThunk(
       // remove user from current user following
       const currentUserRef = doc(db, 'users', currentUserData.uid);
       await updateDoc(currentUserRef, {
-        following: currentUserData.followers.filter(
+        following: currentUserData.following.filter(
           user => user.uid !== unfollowUserData.uid
         ),
       });
@@ -236,13 +236,15 @@ const userSlice = createSlice({
           state.userProfile.userData.followers.push(action.payload.userData);
           state.currentUser.following.push(action.payload.followUserData);
         }
+      } else {
+        if (
+          action.payload.currentLocation.includes('/') ||
+          action.payload.currentLocation.includes('explore')
+        ) {
+          state.currentUser.following.push(action.payload.followUserData);
+        }
       }
-      if (
-        action.payload.currentLocation.includes('/') ||
-        action.payload.currentLocation.includes('explore')
-      ) {
-        state.currentUser.following.push(action.payload.followUserData);
-      }
+
       state.followStatus = 'fulfilled';
       state.error = null;
     },
