@@ -44,7 +44,6 @@ const PostCard = ({ postData }) => {
   const lightTextColor = useColorModeValue('gray.600', 'gray.400');
   const iconColor = useColorModeValue('gray.600', 'gray.100');
   const likeColor = useColorModeValue('red.700', 'gray.100');
-
   const updatedUser = useFetchUser(uid, 'post card');
 
   const handleLikePost = () => {
@@ -140,7 +139,9 @@ const PostCard = ({ postData }) => {
             </HStack>
           </Flex>
         </HStack>
-        {currentUser.uid === uid && <PostOption postData={postData} />}
+        {currentUser.uid === uid && !location.pathname.includes('post') && (
+          <PostOption postData={postData} />
+        )}
       </Flex>
       <Text as={NavLink} to={`/post/${uid}/${id}`} width="full">
         {postText}

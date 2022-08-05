@@ -114,6 +114,23 @@ export const editPost = createAsyncThunk(
         await updateDoc(docRef, {
           posts: updatedPosts,
         });
+        // check bookmark posts and edit
+        const bookmarkRef = doc(db, 'bookmarks', uid);
+        const bookmarkSnap = await getDoc(bookmarkRef);
+        if (bookmarkSnap.exists()) {
+          const bookmarkPosts = bookmarkSnap.data().bookmarks;
+          if (bookmarkPosts.some(post => post.id === id)) {
+            const updatedBookmark = bookmarkPosts.map(post =>
+              post.id === id
+                ? { ...post, postText: postNewText, postImage: postNewImageURL }
+                : post
+            );
+            await updateDoc(bookmarkRef, {
+              bookmarks: updatedBookmark,
+            });
+          }
+        }
+
         return { uid, id, postNewText, currentLocation, postNewImageURL };
       }
     } catch (err) {
@@ -134,6 +151,21 @@ export const deletePost = createAsyncThunk(
         await updateDoc(docRef, {
           posts: updatedPosts,
         });
+        // check bookmark posts and delete
+        const bookmarkRef = doc(db, 'bookmarks', uid);
+        const bookmarkSnap = await getDoc(bookmarkRef);
+        if (bookmarkSnap.exists()) {
+          const bookmarkPosts = bookmarkSnap.data().bookmarks;
+          if (bookmarkPosts.some(post => post.id === id)) {
+            const updatedBookmark = bookmarkPosts.filter(
+              post => post.id !== id
+            );
+            await updateDoc(bookmarkRef, {
+              bookmarks: updatedBookmark,
+            });
+          }
+        }
+
         return { uid, id, currentLocation, updatedPosts };
       }
     } catch (err) {
@@ -216,7 +248,7 @@ export const getBookmarks = createAsyncThunk('post/getBookmarks', async uid => {
     const docRef = doc(db, 'bookmarks', uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      return docSnap.data().bookmarks;
+      return sortPosts(docSnap.data().bookmarks, 'newest');
     } else {
       return [];
     }
@@ -507,8 +539,16 @@ export const postSlice = createSlice({
       state.error = null;
     },
     [editPost.fulfilled]: (state, action) => {
-      const postsArray =
-        action.payload.currentLocation === '/' ? 'homePosts' : 'userPosts';
+      // const postsArray =
+      //   action.payload.currentLocation === '/' ? 'homePosts' : 'userPosts';
+      let postsArray;
+      if (action.payload.currentLocation === '/') {
+        postsArray = 'homePosts';
+      } else if (action.payload.currentLocation === '/bookmarks') {
+        postsArray = 'bookmarks';
+      } else {
+        postsArray = 'userPosts';
+      }
       state[postsArray] = state[postsArray].map(post => {
         if (post.id === action.payload.id) {
           return {
@@ -534,6 +574,11 @@ export const postSlice = createSlice({
       }
       if (action.payload.currentLocation === `/user/${action.payload.uid}`) {
         state.userPosts = action.payload.updatedPosts;
+      }
+      if (action.payload.currentLocation === '/bookmarks') {
+        state.bookmarks = state.bookmarks.filter(
+          post => post.id !== action.payload.id
+        );
       }
       toast.success('Deleted post successfully');
       state.error = null;
